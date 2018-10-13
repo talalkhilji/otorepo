@@ -37,7 +37,7 @@ import Confirmation from './Confirmation';
 import Payment from './Payment';
 import SignOut from './SignOut';
 
-//Washer components
+//Washer components added
 import JobsCards from './washer/JobsCards';
 
 
