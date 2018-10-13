@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "272972821152",
+    "firebase_url": "https://otoserv-1537181707807.firebaseio.com",
+    "project_id": "otoserv-1537181707807",
+    "storage_bucket": "otoserv-1537181707807.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:272972821152:android:eca576ee19a1bee9",
+        "android_client_info": {
+          "package_name": "com.otoserv"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "272972821152-t58pd49etcd10il7c9ua29lqa5052p92.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.otoserv",
+            "certificate_hash": "accecf394e77edbf9989a106021ec4aabb009b97"
+          }
+        },
+        {
+          "client_id": "272972821152-au38og0gkh72eoer1d5of182l9vq1l5v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDItjnjuRCnJNqSUkxTQTnx4WHUnfUtSG4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "272972821152-au38og0gkh72eoer1d5of182l9vq1l5v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

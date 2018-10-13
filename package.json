@@ -1,0 +1,49 @@
+{
+  "name": "OTOServ",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "moment": "^2.22.2",
+    "prop-types": "^15.6.2",
+    "react": "16.4.1",
+    "react-moment": "^0.7.9",
+    "react-native": "0.56.0",
+    "react-native-check-box": "^2.1.3",
+    "react-native-confirmation-code-input": "^1.0.4",
+    "react-native-dash": "0.0.9",
+    "react-native-dialogbox": "^0.6.9",
+    "react-native-fbsdk": "^0.8.0",
+    "react-native-flip-toggle-button": "^1.0.5",
+    "react-native-google-places-autocomplete": "^1.3.9",
+    "react-native-google-signin": "^1.0.0-rc6",
+    "react-native-linear-gradient": "^2.4.2",
+    "react-native-localization": "^2.0.1",
+    "react-native-maps": "^0.21.0",
+    "react-native-modal-datetime-picker": "^6.0.0",
+    "react-native-picker-select": "^4.4.0",
+    "react-native-side-menu": "^1.1.3",
+    "react-native-simple-toast": "0.0.8",
+    "react-native-touch-id": "^4.1.0",
+    "react-navigation": "^2.16.0"
+  },
+  "devDependencies": {
+    "babel-jest": "23.4.2",
+    "babel-preset-react-native": "^5",
+    "eslint-config-rallycoding": "^3.2.0",
+    "jest": "23.5.0",
+    "react-test-renderer": "16.4.1"
+  },
+  "jest": {
+    "preset": "react-native"
+  },
+  "rnpm": {
+    "assets": [
+      "./assets/fonts/"
+    ]
+  }
+}
