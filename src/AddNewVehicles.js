@@ -52,7 +52,7 @@ export default class AddNewVehicles extends React.Component {
               params: {vehicleBesicDetails: {make_id:this.state.make_id, 
                                               model_id:this.state.model_id,
                                               year:this.state.year,
-                                              color_id:this.state.color
+                                              color_id:this.state.color_id
                                             }
               }
             });

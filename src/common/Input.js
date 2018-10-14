@@ -12,7 +12,8 @@ const Input = ({
   inputTitle,
   textAlign,
   marginStyle,
-  textLength
+  textLength,
+  autoCapitalize
 }) => {
   const { container, inputStyle, iconContainer, inputTitleContainer } = styles;
   console.log(imageSource);
@@ -32,6 +33,7 @@ const Input = ({
           keyboardType={keyboardType}
           editable={!notEditable}
           maxLength= {textLength}
+          autoCapitalize={autoCapitalize ? autoCapitalize : 'words'}
         />
         {imageSource ? <Image source={imageSource} style={iconContainer} /> : <View style={{ height: 0, width: 0 }} /> }
       </View>

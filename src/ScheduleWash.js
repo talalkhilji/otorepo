@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity, Platform, 
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import Toast from 'react-native-simple-toast';
+import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { CustomItemStatusBar, Button, WhiteBg, Search } from './common';
 
 const mapTemplate = require('./Image/mapTemplate.png');
@@ -22,11 +23,10 @@ export default class ScheduleWash extends React.Component {
                                                          props.navigation.state.params.userDetails :
                                                          {};
 
-                                                         console.log(userDetails);
     this.state = {
       userDetails: userDetails,
-      date: '',
-      time: '',
+      date: moment(),
+      time: moment(),
       isDatePickerVisible: false,
       isTimePickerVisible: false,
       hour: '',
@@ -39,7 +39,7 @@ export default class ScheduleWash extends React.Component {
   }
   openChooseServiceScreen() {
 
-    let selectDate = `${this.state.year}-${this.state.month}-${this.state.day} ${this.state.hour}:${this.state.minute}:00`;
+    let selectDate = `${moment(this.state.date).format('YYYY-MM-DD')} ${this.state.hour}:${this.state.minute}:00`;
 
     if(moment() > moment(selectDate)){
        Toast.show('Please select future date for schedule wash');
@@ -47,7 +47,14 @@ export default class ScheduleWash extends React.Component {
     }
 
     const { navigate } = this.props.navigation;
-    navigate('ChooseService');
+    navigate({key: 'ChooseService', 
+              routeName: 'ChooseService', 
+              params: {
+                userDetails: this.state.userDetails,
+                washDate: moment(this.state.date),
+                washTime: moment(this.state.time)
+              }
+            });
   }
   _showTimePicker = () => this.setState({ isTimePickerVisible: true });
 
@@ -55,9 +62,11 @@ export default class ScheduleWash extends React.Component {
 
   _handleTimePicked = (time) => {
     console.log('A date has been picked: ', time);
-    this.setState({ hour: moment(time).format('HH') })
-    this.setState({ minute: moment(time).format('mm') })
-    this.setState({ ampm: moment(time).format('A') })
+    this.setState({ hour: moment(time).format('HH'),
+                    minute: moment(time).format('mm'),
+                    ampm: moment(time).format('a'),
+                    time: moment(time)
+                  });
     this._hideTimePicker();
   };
 
@@ -67,9 +76,11 @@ export default class ScheduleWash extends React.Component {
 
   _handleDatePicked = (date) => {
     console.log('A date has been picked: ', date);
-    this.setState({ day: moment(date).format('DD') })
-    this.setState({ month: moment(date).format('MMM') })
-    this.setState({ year: moment(date).format('YYYY') })
+    this.setState({ day: moment(date).format('DD'), 
+                    month: moment(date).format('MMM'),
+                    year: moment(date).format('YYYY'),
+                    date: moment(date)
+                  });
     this._hideDatePicker();
   };
   render() {
@@ -80,12 +91,14 @@ export default class ScheduleWash extends React.Component {
           <Image source={mapTemplate} style={{ position: 'absolute', width }} />
           <View>
             <CustomItemStatusBar isLocation />
+            {/*
             <View style={{ marginTop: 15 }}>
               <Search
                 firstIcon={icSearch}
                 placeholder='Search..'
               />
             </View>
+          */}
           </View>
           <View style={{ padding: 10 }}>
             <View style={{ paddingLeft: 10, paddingRight: 10 }}>

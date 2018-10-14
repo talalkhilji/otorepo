@@ -60,9 +60,11 @@ export default class LicensePlateDetails extends React.Component {
                "plate_number": this.state.plate_no, 
                "plate_place_code": this.state.plate_code, 
                "detail": null, 
-               "ip_address": null, 
                "color_id": this.state.vehicleBesicDetails.color_id 
               };
+
+
+              //console.log(data); return;
 
     response = await Post({url: 'vehicle', data:data});
 
@@ -116,7 +118,7 @@ export default class LicensePlateDetails extends React.Component {
                   />
                 </AlbumDetailSection>
               </AlbumDetail>
-              <View style={{ flex: 1, justifyContent: 'center', padding: 10, marginLeft: 30, marginRight: 30 }} >
+              <View style={{ flex: 0, justifyContent: 'center', padding: 10, marginLeft: 30, marginRight: 30 }} >
                 <WhiteBg>
                   <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
                     <View style={styles.RectangleShapeView} />

@@ -1,7 +1,9 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Platform, StatusBar } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { WhiteBg, CustomItemStatusBar, AlbumDetail, AlbumDetailSection, Input } from './common';
+import Toast from 'react-native-simple-toast';
+import moment from 'moment';
+import { WhiteBg, CustomItemStatusBar, AlbumDetail, AlbumDetailSection, Input, placeOrder, Loader, Post} from './common';
 
 
 const imgWash = require('./Image/img_wash.png');
@@ -17,9 +19,113 @@ const { width } = Dimensions.get('window');
 const strings = globleString.default.strings;
 
 export default class Confirmation extends React.Component {
-  openPaymentScreen() {
+
+
+  constructor(props){
+    super(props);
+
+
+    let userDetails = 'userDetails' in props.navigation.state.params ? 
+                                                         props.navigation.state.params.userDetails :
+                                                         {};
+
+    let service = 'service' in props.navigation.state.params ? 
+                                                         props.navigation.state.params.service :
+                                                         {};                                                     
+
+
+    let vehicleDetails = 'vehicleDetails' in props.navigation.state.params ? 
+                                                         props.navigation.state.params.vehicleDetails :
+                                                         {};
+
+
+    let price = 'price' in props.navigation.state.params ? 
+                                                         props.navigation.state.params.price :
+                                                         0;   
+
+    let washingDate = 'washingDate' in props.navigation.state.params ? 
+                                                         props.navigation.state.params.washingDate :
+                                                         moment();
+
+    let washingTime = 'washingTime' in props.navigation.state.params ? 
+                                                         props.navigation.state.params.washingTime :
+                                                         moment().add('45', 'minutes');                                                                                                                                                              
+
+    this.state = {
+        userDetails: userDetails,
+        service: service,
+        price: price,
+        vehicleDetails: vehicleDetails, 
+        villApartmentNo: '',
+        remarks: '',
+        specialRequest: '',
+        washingDate: washingDate,
+        washingTime: washingTime,
+        loading: false
+    };
+  }
+
+
+  componentDidMount(){
+    //console.log(this.state.washingDate, this.state.washingTime);
+  }
+
+  async openPaymentScreen(mode) {
+
     const { navigate } = this.props.navigation;
-    navigate('Payment', { isPopToRoute: true });
+
+
+    let services = await this.state.service.serviceType.filter(x => x.status).map(({id, serviceName, status}) => id);
+
+    if(!this.state.villApartmentNo){
+      Toast.show('Please provide villa/appartment no');
+      return;
+    }
+
+
+    this.setState({loading: true});
+
+    if(mode === 'payment'){
+
+      let data = { 
+                  "location_id": 1,
+                  "vehicle_id": this.state.userDetails.vehicle_id, 
+                  "service_id": this.state.service.id,
+                  "services": services.join(','),
+                  "washing_date": moment(this.state.washingDate).format('YYYY-MM-DD'), 
+                  "washing_time": moment(this.state.washingTime).format('hh:mm a'),
+                  "price": this.state.price, 
+                  "villa_apartment_no": this.state.villApartmentNo, 
+                  "remarks": this.state.remarks, 
+                  "special_request": this.state.specialRequest
+                };
+
+
+      //console.log(JSON.stringify(data));          
+      //response = await Post({url: 'order', data:data});
+
+     let response = await placeOrder(data);
+
+     this.setState({loading: false});
+
+
+     if(response.status === 201){
+        navigate({key: 'HomeApp', 
+                routeName: 'HomeApp', 
+                params: {
+                  newOrderDetails: response.data.content
+                }
+        });
+     }
+     else{
+        Toast.show('Something went wrong with the order');
+     }
+    }
+    else{
+      Toast.show('Credit card option is not available');
+    }
+
+    //navigate('Payment', { isPopToRoute: true });
   }
   render() {
     const { topContainer, mainContainer, viewContainer, textContainer, transperantContainer, buttonContainer, viewStyle, container, statusTextContainer, roundTextContainer, selectedBgContainer, imageContainer  } = styles;
@@ -27,23 +133,23 @@ export default class Confirmation extends React.Component {
      return (
       <View style={topContainer}>
         <CustomItemStatusBar isConfirmation />
-
+        <Loader loading={this.state.loading} message='Please wait..' />
         <ScrollView>
           <View style={mainContainer}>
             <WhiteBg>
               <View style={{ flex: 1, }}>
                 <View style={viewContainer}>
-                  <Text style={textContainer}>Normal Wash</Text>
+                  <Text style={textContainer}>{this.state.service.washType}</Text>
                   <Image source={imgWash} />
                 </View>
                 <View style={{ backgroundColor: '#E3E8F0', height: 1, marginLeft: 10, marginRight: 10 }} />
                 <View style={viewContainer}>
-                  <Text style={textContainer}>Nissan Maxima ( White )</Text>
+                  <Text style={textContainer}>{`${this.state.vehicleDetails[0].make_name} ${this.state.vehicleDetails[0].model_name}`}</Text>
                   <Image source={icCar} style={{ height: 11, width: 32 }} />
                 </View>
                 <View style={{ backgroundColor: '#E3E8F0', height: 1, marginLeft: 10, marginRight: 10 }} />
                 <View style={viewContainer}>
-                  <Text style={textContainer}>44-A, Street 69-B \n Khalifa City, Abu Dhabi</Text>
+                  <Text style={textContainer}>{this.state.userDetails.location_name}</Text>
                   <Image source={icPin} />
                 </View>
               </View>
@@ -57,19 +163,19 @@ export default class Confirmation extends React.Component {
             <AlbumDetailSection>
               <Input
                 placeholder={strings.villApartmentNo}
-                onChangeText={email => this.setState({ email })}
+                onChangeText={villApartmentNo => this.setState({ villApartmentNo })}
               />
             </AlbumDetailSection>
             <AlbumDetailSection>
               <Input
                 placeholder={strings.remarks}
-                onChangeText={email => this.setState({ email })}
+                onChangeText={remarks => this.setState({ remarks })}
               />
             </AlbumDetailSection>
             <AlbumDetailSection>
               <Input
                 placeholder={strings.specialRequest}
-                onChangeText={email => this.setState({ email })}
+                onChangeText={specialRequest => this.setState({ specialRequest })}
               />
             </AlbumDetailSection>
             <Text style={{ fontSize: 12, fontFamily: 'Lato-Italic', color: '#536788', marginLeft: 15, marginRight: 15 }}>{strings.requestMessage}</Text>
@@ -80,16 +186,16 @@ export default class Confirmation extends React.Component {
           <View style={{ flexDirection: 'row', marginLeft: 10, marginRight: 10 }}>
             <View style={{ flex: 1, flexDirection: 'row' }} >
               <View style={[styles.gradientContainer]}>
-                <TouchableOpacity onPress={this.openPaymentScreen.bind(this)}>
+                <TouchableOpacity onPress={this.openPaymentScreen.bind(this, 'payment')}>
                   <LinearGradient
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
-                    colors={['#77D8F7', '#5BC6E3', '#3FB4D0']}
-                    style={styles.linearGradient}
+                    colors={['#FFFFFF', '#FFFFFF', '#FFFFFF']}
+                    style={[styles.linearGradient, {borderWidth:1, borderColor: '#f2b568'}]}
                   >
                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                      <Image source={icCash} style={{ tintColor: '#FFFFFF' }} />
-                      <Text style={buttonContainer}>{strings.cash}</Text>
+                      <Image source={icCash} style={{ tintColor: '#f2b568' }} />
+                      <Text style={[buttonContainer, {color: '#f2b568'}]}>{strings.cash}</Text>
                     </View>
                   </LinearGradient>
                 </TouchableOpacity>
@@ -97,16 +203,16 @@ export default class Confirmation extends React.Component {
             </View>
             <View style={{ flex: 1, flexDirection: 'row' }} >
               <View style={[styles.gradientContainer]}>
-                <TouchableOpacity onPress={this.openPaymentScreen.bind(this)}>
+                <TouchableOpacity onPress={this.openPaymentScreen.bind(this, 'creditCard')}>
                   <LinearGradient
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
-                    colors={['#77D8F7', '#5BC6E3', '#3FB4D0']}
-                    style={styles.linearGradient}
+                    colors={['#FFFFFF', '#FFFFFF', '#FFFFFF']}
+                    style={[styles.linearGradient, {borderWidth:1, borderColor: '#546889'}]}
                   >
                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                      <Image source={icCreditCard} style={{ tintColor: '#FFFFFF' }} />
-                      <Text style={buttonContainer}>{strings.creditCard}</Text>
+                      <Image source={icCreditCard} style={{ tintColor: '#546889' }} />
+                      <Text style={[buttonContainer, {color: '#546889'}]}>{strings.creditCard}</Text>
                     </View>
                   </LinearGradient>
                 </TouchableOpacity>

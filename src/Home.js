@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, Dimensions, Platform, StatusBar, AsyncStorage, TouchableOpacity } from 'react-native';
-import { CustomItemStatusBar, Search, FeedBack, OrderDone, Button, ButtonSmall, BlueRoundBg, Get, getCustomerVehicles, SearchAutoComplete } from './common';
+import { CustomItemStatusBar, Search, FeedBack, OrderDone, Button, ButtonSmall, BlueRoundBg, Get, getCustomerVehicles, SearchAutoComplete, windowHeight } from './common';
 import FlipToggle from 'react-native-flip-toggle-button';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import Dash from 'react-native-dash';
+import Toast from 'react-native-simple-toast';
 import { OrangeBg } from './common';
 
 const mapTemplate = require('./Image/mapTemplate.png');
@@ -27,6 +28,12 @@ export default class Home extends React.Component {
   constructor(props) {
     super(props);
 
+
+    let newOrderDetails = props.navigation.state.params ? 
+                                                         (props.navigation.state.params.newOrderDetails ? 
+                                                            props.navigation.state.params.newOrderDetails : {}) :
+                                                         {};
+
     this.state = {
       selectVehicleHeight: null,
       mapRegion: {
@@ -43,7 +50,8 @@ export default class Home extends React.Component {
       vehicles: {},
       vehicle_id: null,   
       location_name: null, 
-      googleApiKey: 'AIzaSyAlYrDbenRCp4MI3nfekyiawLfCdihXboM'             
+      googleApiKey: 'AIzaSyAlYrDbenRCp4MI3nfekyiawLfCdihXboM',
+      newOrderDetails: newOrderDetails          
     };
   }
 
@@ -66,6 +74,17 @@ export default class Home extends React.Component {
     navigate('AddNewVehicles');
   }
   openScheduleWashScreen() {
+
+    if(!this.state.location_name){
+      Toast.show('Please select location');
+      return;
+    }
+
+    if(!this.state.vehicle_id){
+      Toast.show('Please select vehicle');
+      return;
+    }
+
     const { navigate } = this.props.navigation;
     navigate({key:'ScheduleWash', 
               routeName:'ScheduleWash', 
@@ -78,6 +97,17 @@ export default class Home extends React.Component {
             });
   }
   openChooseServiceScreen() {
+
+    if(!this.state.location_name){
+      Toast.show('Please select location');
+      return;
+    }
+
+    if(!this.state.vehicle_id){
+      Toast.show('Please select vehicle');
+      return;
+    }
+
     const { navigate } = this.props.navigation;
     navigate({key:'ChooseService', 
               routeName:'ChooseService', 
@@ -140,15 +170,17 @@ export default class Home extends React.Component {
     return (
       <View style={mainContainer}>
         <CustomItemStatusBar isLocation />
-        <View style={{ flex: 1, justifyContent: 'space-between', backgroundColor: '#f3f6f9' }}>
-        <View style={styles.container}>
+        <View style={{ flex: 0, justifyContent: 'space-between', backgroundColor: '#f3f6f9', height: windowHeight }}>
+        <View style={[styles.container]}>
           <MapView
             provider={PROVIDER_GOOGLE}
             style={styles.map}
             region={this.state.mapRegion}
+            onRegionChangeComplete={() => this.marker ? this.marker.showCallout() : ''}
           >
           {this.state.allowMarkers &&
             <Marker identifier='current_location' 
+                    ref={marker => (this.marker = marker)}
                     coordinate={this.state.currentCoordinates} 
                     image={require('./Image/ic_logo_1.png')}
                     >
@@ -182,80 +214,83 @@ export default class Home extends React.Component {
               placeholder='Search..'
             />
           */}
-
-          <GooglePlacesAutocomplete
-                  listViewDisplayed={ false }
-                  enablePoweredByContainer={false}
-                  placeholder={strings.search}
-                  minLength={3}
-                  autoFocus={false}
-                  fetchDetails={true}
-                  currentLocation={false}
-                  currentLocationLabel="➤ User Current location"
-                  onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-                  //console.log(details.geometry);
-                   this.selectLocation(details);
-                }}
-
-                getDefaultValue={() => {
-                    return ''; // text input default value
+          <View style={{flex: 0}}>
+            <GooglePlacesAutocomplete
+                    listViewDisplayed={ false }
+                    enablePoweredByContainer={false}
+                    placeholder={strings.search}
+                    minLength={3}
+                    autoFocus={false}
+                    fetchDetails={true}
+                    currentLocation={false}
+                    currentLocationLabel="➤ User Current location"
+                    onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
+                    //console.log(details.geometry);
+                     this.selectLocation(details);
                   }}
-                  query={{
-                    //types: '(cities)',
-                    key: this.state.googleApiKey,
-                    language: 'en'
-                  }}
-                  styles={{
-                    textInputContainer: {
-                      paddingLeft: 10,
-                      paddingRight: 10,
-                      height: 45,
-                      flexDirection: 'row',
-                      borderRadius: 10,
-                      backgroundColor: '#FFFFFF',
-                      shadowColor: '#707070',
-                      shadowOffset: {
-                        width: 0,
-                        height: 3
+
+                  getDefaultValue={() => {
+                      return ''; // text input default value
+                    }}
+                    query={{
+                      //types: '(cities)',
+                      key: this.state.googleApiKey,
+                      language: 'en'
+                    }}
+                    styles={{
+                      textInputContainer: {
+                        paddingLeft: 10,
+                        paddingRight: 10,
+                        height: 45,
+                        flexDirection: 'row',
+                        borderRadius: 10,
+                        backgroundColor: '#FFFFFF',
+                        shadowColor: '#707070',
+                        borderColor: '#FFFFFF',
+                        shadowOffset: {
+                          width: 0,
+                          height: 3
+                        },
+                        shadowRadius: 5,
+                        shadowOpacity: 0.3,
+                        margin: 5,
+                        alignItems: 'center',
+                        elevation: 2
                       },
-                      shadowRadius: 5,
-                      shadowOpacity: 0.3,
-                      margin: 5,
-                      alignItems: 'center'
-                    },
-                    textInput: {
-                      flex: 1,
-                      fontSize: 15,
-                      fontFamily: 'Lato-Regular',
-                      color: '#BEBEBE',
-                      marginTop: -1,
-                      paddingLeft: 10,
-                      paddingRight: 20
-                    },
-                    predefinedPlacesDescription: {
-                      color: '#000000',
-                      fontFamily: "Lato",
-                      fontWeight: 'bold',
-                      color: '#666666'
-                    },
-                    listView: {
-                      borderTopWidth: 1,
-                      borderColor: "#d4d3d3",
-                      maxHeight: height,
-                      position: 'absolute',
-                      top: 50,
-                      backgroundColor: '#ffffff',
-                      margin: 5,
-                      marginTop: 0,
-                      borderRadius: 10
-                    }
-                  }}
-                  //nearbyPlacesAPI={'GooglePlacesSearch'}
-                  //filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']}
-                  renderLeftButton={()  => <Image source={icSearch} style={{marginLeft: 5}} />}
-                />
+                      textInput: {
+                        flex: 1,
+                        fontSize: 15,
+                        fontFamily: 'Lato-Regular',
+                        color: '#BEBEBE',
+                        marginTop: -1,
+                        paddingLeft: 10,
+                        paddingRight: 20
+                      },
+                      predefinedPlacesDescription: {
+                        color: '#000000',
+                        fontFamily: "Lato",
+                        fontWeight: 'bold',
+                        color: '#666666'
+                      },
+                      listView: {
+                        borderTopWidth: 1,
+                        borderColor: "#d4d3d3",
+                        maxHeight: height,
+                        position: 'absolute',
+                        top: 50,
+                        backgroundColor: '#ffffff',
+                        margin: 5,
+                        marginTop: 0,
+                        borderRadius: 10
+                      }
+                    }}
+                    //nearbyPlacesAPI={'GooglePlacesSearch'}
+                    //filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']}
+                    renderLeftButton={()  => <Image source={icSearch} style={{marginLeft: 5}} />}
+                  />
+          </View>        
             
-          <View>
+          <View style={{position: 'absolute', width: width, bottom: 170, left: 0, right: 0}}>
             <View style={{ flexDirection: 'row', paddingLeft: 15, paddingRight: 15, }}>
               <View style={{ flex: 1 }} />
               <View style={{ width: 57 }}>

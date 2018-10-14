@@ -146,6 +146,7 @@ export default class Login extends React.Component {
                   <Input
                     placeholder={strings.email}
                     onChangeText={email => this.setState({ email })}
+                    autoCapitalize="none"
                   />
                 </AlbumDetailSection>
                 <AlbumDetailSection>

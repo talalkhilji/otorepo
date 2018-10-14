@@ -1,11 +1,27 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { CustomStatusBar, MyOrdersCard } from './common';
+import moment from 'moment';
+import { CustomStatusBar, MyOrdersCard, getCustomerOrders } from './common';
 import DialogBox from 'react-native-dialogbox';
 const icCash = require('./Image/ic_cash.png');
 const icCreditCard = require('./Image/ic_credit_card.png');
 
 export default class MyOrders extends React.Component {
+
+  constructor(props){
+    super(props);
+
+    this.state = {
+      customerOrders: []
+    };
+  }
+
+  async componentDidMount(){
+    let customerOrders = await getCustomerOrders();
+
+    console.log(customerOrders);
+    this.setState({customerOrders});
+  }
 
 openAddNewCardScreen() {
     const { navigate } = this.props.navigation;
@@ -46,40 +62,23 @@ render() {
         />
         <ScrollView>
           <View style={{ flex: 1, padding: 15, paddingTop: 25 }}>
-            <MyOrdersCard
-              carName='SILVER MAXIMA'
-              washType='Extensive Deep Wash'
-              paymentType='Cash on Delivery'
-              orderNo='Order No.: AD8090101'
-              dateTime='Saturday, 1st Sept. 2018 @ 7:15 pm'
-              status='STARTING JOB'
-              paymentMethod='CASH'
-              paymentMethodIcon={icCash}
-              price='220'
-              onPress={() => {this.openDialog()}}
-            />
-            <MyOrdersCard
-              carName='NISSAN MAXIMA'
-              washType='Super Wash'
-              paymentType='Package'
-              orderNo='Order No.: AD8090101'
-              dateTime='Saturday, 1st Sept. 2018 @ 7:15 pm'
-              status='RESERVED'
-              paymentMethod='CREDIT CARD'
-              paymentMethodIcon={icCreditCard}
-              price='220'
-            />
-            <MyOrdersCard
-              carName='SILVER MAXIMA'
-              washType='Extensive Deep Wash'
-              paymentType='Cash on Delivery'
-              orderNo='Order No.: AD8090101'
-              dateTime=''
-              status='RESERVED'
-              paymentMethod='CREDIT CARD'
-              paymentMethodIcon={icCreditCard}
-              price='220'
-            />
+
+          {this.state.customerOrders.map((order) => 
+            <View key={order.id}>
+               <MyOrdersCard
+                carName='SILVER MAXIMA'
+                washType={order.service_title}
+                paymentType='Cash on Delivery'
+                orderNo={`Order No.: ${order.id}`}
+                dateTime={`${moment(order.washing_date).format('dddd, Do MMM, YYYY')} @ ${order.washing_time}`}
+                status='STARTING JOB'
+                paymentMethod='CASH'
+                paymentMethodIcon={icCash}
+                price={order.price}
+                onPress={() => {this.openDialog()}}
+              />
+            </View>  
+          )}
           </View>
         </ScrollView>
         <DialogBox ref={dialogbox => { this.dialogbox = dialogbox }}/>

@@ -15,71 +15,86 @@ const Get = (props) => {
 */
 
 const Post = async (props) => {
-    //let data = props.data; 
-    return axios.post(props.url, props.data);
+  return axios.post(props.url, props.data);
 };
 
 
 const getCustomerVehicles = async () => {
-   let userData =  await AsyncStorage.getItem('userData');
-   let userId = JSON.parse(userData).id;
-   let response = await Get({url:`customer_vehicles/customer_id/${userId}`});
-
-   if(response.status === 200){
-      return response.data;
-   }
-   else{
-      return [];
-   }
+  let userData =  await AsyncStorage.getItem('userData');
+  let userId = JSON.parse(userData).id;
+  let response = await Get({url:`customer_vehicles/customer_id/${userId}`});
+  return sendResponse(response);
     
 }
 
 
 const getMakes = async () => {
-      let response = await Get({url: 'makes'});
-
-      if(response.status === 200){
-          return response.data;
-      }
-      else{
-          return [];
-      }
-
+  let response = await Get({url: 'makes'});
+  return sendResponse(response);
 }
 
 
 const getMakeModels = async (make_id) => {
-    let response = await Get({url: `make_models/make_id/${make_id}`});
-
-    if(response.status === 200){
-          return response.data;
-    }
-    else{
-        return [];
-    }
+  let response = await Get({url: `make_models/make_id/${make_id}`});
+  return sendResponse(response);
 }
 
 
 const getColors = async () => {
-    let response = await Get({url: 'colors'}); 
-
-    if(response.status === 200){
-          return response.data;
-    }
-    else{
-        return [];
-    }
+  let response = await Get({url: 'colors'}); 
+  return sendResponse(response);
 }
 
 const getCities = async () => {
-    let response = await Get({url: 'cities'}); 
-
-    if(response.status === 200){
-          return response.data;
-    }
-    else{
-        return [];
-    }
+  let response = await Get({url: 'cities'}); 
+  return sendResponse(response);
 }
 
-export { Get, Post, getCustomerVehicles, getMakes, getMakeModels, getColors, getCities };
+
+const getServices = async () => {
+  let response = await Get({url: 'services'}); 
+  return sendResponse(response);
+}
+
+
+const getVehicleDetails = async (vehicle_id) => {
+  let response = await Get({url: `vehicles/${vehicle_id}`}); 
+  return sendResponse(response);
+}
+
+
+const sendResponse = (response) => {
+  if(response.status === 200){
+        return response.data;
+  }
+  else{
+      return [];
+  }
+}
+
+
+const placeOrder = async (data) => {
+
+  let userData =  await AsyncStorage.getItem('userData');
+  let userId = JSON.parse(userData).id;
+
+  data.customer_id = userId;
+
+  console.log(data);
+
+  response = await Post({url:'order', data:data});
+
+  return response;
+}
+
+
+const getCustomerOrders = async () => {
+
+  let userData =  await AsyncStorage.getItem('userData');
+  let userId = JSON.parse(userData).id;
+
+  let response = await Get({url: `customer_orders/customer_id/${userId}`}); 
+  return sendResponse(response);
+}
+
+export { Get, Post, getCustomerVehicles, getMakes, getMakeModels, getColors, getCities, getServices, getVehicleDetails, placeOrder, getCustomerOrders };

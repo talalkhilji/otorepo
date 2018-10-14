@@ -8,8 +8,9 @@ import { StyleSheet,
   Platform,
   StatusBar } from 'react-native';
 import Panel from './Panel/Panel';
-import { ServiceType, Button, CustomItemStatusBar, Get } from './common';
+import { ServiceType, Button, CustomItemStatusBar, Get, getServices, getVehicleDetails } from './common';
 import DialogBox from 'react-native-dialogbox';
+import moment from 'moment';
 
 const icRefresh = require('./Image/ic_refresh.png');
 const icCorrect = require('./Image/ic_correct_white.png');
@@ -19,9 +20,28 @@ const { width } = Dimensions.get('window');
 export default class ChooseService extends React.Component {
   constructor(props) {
     super(props);
+
+    let userDetails = 'userDetails' in props.navigation.state.params ? 
+                                                         props.navigation.state.params.userDetails :
+                                                         {};
+
+
+    let washDate =  props.navigation.state.params ? 
+                                                  (props.navigation.state.params.washDate ? moment(props.navigation.state.params.washDate) : moment()) :
+                                                   moment();  
+
+    let washTime =  props.navigation.state.params ? 
+                                                  (props.navigation.state.params.washTime ? moment(props.navigation.state.params.washTime) : moment().add('45', 'minutes')) :
+                                                   moment().add('45', 'minutes');                                                                                                  
+
+
     this.state = {
       isActive: false,
-      Data: [{
+      userDetails: userDetails,
+      vehicleDetails: [],
+      washDate: washDate,
+      washTime: washTime,
+      Data: [] /*[{
         id: 0,
         washType: 'NORMAL WASH',
         price: '45',
@@ -68,20 +88,16 @@ export default class ChooseService extends React.Component {
           { id: 7, serviceName: 'A/C Cleaning', status: true },
         ],
         averageTime: 30
-      }]
+      }]*/
     };
-
-
-    this.getServices();
   }
 
 
-  async getServices(){
+  async componentDidMount(){
+    let vehicleDetails = await getVehicleDetails(this.state.userDetails.vehicle_id);
+    let services = await getServices();
 
-    response = await Get({url:`services`});
-
-    //this.setState({Data: response.data});
-    
+    this.setState({Data: services, vehicleDetails});
   }
 
   updateMenuState(typeId, serviceTypeId, status) {
@@ -89,31 +105,54 @@ export default class ChooseService extends React.Component {
     Data[typeId].serviceType[serviceTypeId].status = status;
     this.setState({ Data });
   }
-  openConfirmationScreen() {
+  openConfirmationScreen(service, price) {
     const { navigate } = this.props.navigation;
-    navigate('Confirmation');
+    navigate({key: 'Confirmation', routeName: 'Confirmation', params: {
+                                                        userDetails: this.state.userDetails,
+                                                        vehicleDetails: this.state.vehicleDetails,
+                                                        service: service,
+                                                        price:price,
+                                                        washDate: moment(this.state.washDate).format('YYYY-MM-DD'),
+                                                        washTime: moment(this.state.washTime).format('hh:mm a'),
+                                                   }});
   }
+
+
+  getVehicleTypePrice(vehicleTypePrices){
+    let price = 0;
+    let vehicleType = this.state.vehicleDetails[0] ? this.state.vehicleDetails[0].vehicle_type : 'Sedan';
+
+    vehicleTypePrices.map((x) => {
+                                  if(x[vehicleType]){
+                                    price = x[vehicleType].price;
+                                  }
+                            });
+
+    return price;
+  }
+
   renderWashData() {
-    return this.state.Data.map(type => (
-      <Panel key={type.id} title={type.washType} price={type.price} openInfoDialog={() => openInfoDialog()}>
-        <View style={{ flex: 1, }}>
-          {this.renderServiceTypeData(type)}
+    return this.state.Data.map((type, typeIndex) => (
+      <Panel key={type.id} title={type.washType} price={this.getVehicleTypePrice(type.vehicleTypePrices)} openInfoDialog={() => openInfoDialog()}>
+        <View style={{ flex: 1 }}>
+          {this.renderServiceTypeData(typeIndex, type)}
           <View style={{ flexDirection: 'row', justifyContent: 'center', padding: 10, paddingTop: 20 }} >
              <Image source={icRefresh} />
              <Text style={styles.listItem}>Average {type.averageTime} mins</Text>
           </View>
-            <Button label='Continue' onPress={() => this.openConfirmationScreen()} />
+            <Button label='Continue' onPress={() => this.openConfirmationScreen(type, this.getVehicleTypePrice(type.vehicleTypePrices))} />
         </View>
       </Panel>
     ));
   }
-  renderServiceTypeData(type) {
-    return type.serviceType.map(serviceTypeData => (
-      <ServiceType key={serviceTypeData.id} title={serviceTypeData.serviceName} value={serviceTypeData.status} onPress={() => {this.updateStatus(type, serviceTypeData)}} />
+  renderServiceTypeData(typeIndex, type) {
+    return type.serviceType.map((serviceTypeData, serviceIndex) => (
+      <ServiceType key={serviceTypeData.id} title={serviceTypeData.serviceName} value={serviceTypeData.status} onPress={() => {this.updateStatus(typeIndex, serviceIndex, serviceTypeData)}} />
     ));
   }
-  updateStatus(type, serviceTypeData){
-    this.updateMenuState(type.id, serviceTypeData.id, !serviceTypeData.status)
+  updateStatus(typeIndex, serviceIndex, serviceTypeData){
+    console.log(typeIndex, serviceIndex, !serviceTypeData.status);
+    this.updateMenuState(typeIndex, serviceIndex, !serviceTypeData.status);
   }
   openInfoDialog(){
     this.dialogbox.confirm({

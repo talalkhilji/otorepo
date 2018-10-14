@@ -98,17 +98,6 @@ export default function Menu({ onItemSelected, userName, languageValue, onToggle
               </View>
             </View>
           </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => onItemSelected('Jobs Cards')}>
-            <View style={navigationItemContainer}>
-              <View style={menuImageContainer}>
-                <Image style={imageContainer} source={icPayment} />
-              </View>
-              <View style={{ justifyContent: 'center' }}>
-                <Text style={textContainer}>{strings.jobsSmall}</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
           <LinearGradient
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}

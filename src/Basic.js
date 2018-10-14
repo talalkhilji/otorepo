@@ -37,9 +37,6 @@ import Confirmation from './Confirmation';
 import Payment from './Payment';
 import SignOut from './SignOut';
 
-//Washer components added
-import JobsCards from './washer/JobsCards';
-
 
 const image = require('./Image/ic_home.png');
 
@@ -71,18 +68,8 @@ const MyOrdersApp = StackNavigator({
 const PaymentCardsAppSample = props => (
   <PaymentCards navigation={props.navigation} />
 );
-
-const JobsCardsAppSample = props => (
-  <JobsCards navigation={props.navigation} />
-);
-
 const PaymentCardsApp = StackNavigator({
   PaymentCardsAppSample: { screen: PaymentCardsAppSample },
-  AddNewCard: { screen: AddNewCard },
-}, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
-
-const JobsCardsApp = StackNavigator({
-  JobsCardsAppSample: { screen: JobsCardsAppSample },
   AddNewCard: { screen: AddNewCard },
 }, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
 
@@ -191,11 +178,6 @@ export default class Basic extends Component {
     if (this.state.selectedItem === 'Payment Cards') {
       return (<PaymentCardsApp />);
     }
-
-    if (this.state.selectedItem === 'Jobs Cards') {
-      return (<JobsCardsApp />);
-    }
-
     if (this.state.selectedItem === 'Contact') {
       return (<ContactApp />);
     }
