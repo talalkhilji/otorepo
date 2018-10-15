@@ -97,4 +97,28 @@ const getCustomerOrders = async () => {
   return sendResponse(response);
 }
 
-export { Get, Post, getCustomerVehicles, getMakes, getMakeModels, getColors, getCities, getServices, getVehicleDetails, placeOrder, getCustomerOrders };
+
+const addLocation = async (data) => {
+
+  let userData =  await AsyncStorage.getItem('userData');
+  let userId = JSON.parse(userData).id;
+
+  data.customer_id = userId;
+
+  let response = await Post({url: `location`, data: data}); 
+  return sendResponse(response);
+}
+
+export { Get, 
+         Post, 
+         getCustomerVehicles, 
+         getMakes, 
+         getMakeModels, 
+         getColors, 
+         getCities, 
+         getServices, 
+         getVehicleDetails, 
+         placeOrder, 
+         getCustomerOrders,
+         addLocation
+       };

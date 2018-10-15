@@ -1,9 +1,8 @@
 import React from 'react';
-import { View, StatusBar, Platform, Dimensions, Text, Image } from 'react-native';
+import { View, StatusBar, Platform, Dimensions, Text, Image, TouchableOpacity } from 'react-native';
 
 const icCorrect = require('../Image/ic_correct_white.png');
 const { width } = Dimensions.get('window');
-
 
 import { windowHeight, maxHeightChk, iphoneXHeight } from './Constants';
 
@@ -19,6 +18,9 @@ const CustomItemStatusBar = ({
   isService,
   isConfirmation,
   isPayment,
+  title,
+  secondIcon,
+  onPressSecondIcon
 }) => {
   const { viewStyle, container, textContainer, roundTextContainer, selectedBgContainer, imageContainer } = styles;
   const isUpcomingView = (text) => (
@@ -45,8 +47,13 @@ const CustomItemStatusBar = ({
       <MyStatusBar backgroundColor="#f3f6f9" />
     */}
       <View style={container} >
-        <View style={{ alignItems: 'center', justifyContent: 'center', height: windowHeight > maxHeightChk ? 100 : 70}} >
-          <Text style={{ color: '#2B95B3', alignItems: 'center', marginTop: windowHeight > maxHeightChk ? 25 : 10 }}>OTOServ</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: windowHeight > maxHeightChk ? 100 : 70}} >
+          <Text style={{ color: '#2B95B3', alignItems: 'center', marginTop: windowHeight > maxHeightChk ? 25 : 10 }}>{title || 'OTOServ'}</Text>   
+          <View style={styles.iconContainer}> 
+           <TouchableOpacity onPress={onPressSecondIcon}>
+              {secondIcon ? <Image source={secondIcon} /> : <View style={styles.iconContainer} /> }
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={{ justifyContent: 'space-between', height: 50 }}>
           <View style={{ flex: 1, justifyContent: 'space-between', flexDirection: 'row' }}>
@@ -120,6 +127,11 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center'
   },
+  iconContainer:{
+    position: 'absolute',
+    right: 10,
+    bottom: windowHeight > maxHeightChk ? 25 : 16
+  }
 };
 
 export { CustomItemStatusBar };

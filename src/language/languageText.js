@@ -48,6 +48,7 @@ const strings = new LocalizedStrings({
     savedLocation: 'Saved Location',
     myPackages: 'My Packages',
     washNow: 'Wash Now',
+    servicestatus: 'Service Status',
 
     // Schedule Wash
     time: 'TIME',
@@ -207,6 +208,7 @@ const strings = new LocalizedStrings({
     savedLocation: 'الموقع المحفوظ',
     myPackages: 'الحزم الخاصة بي',
     washNow: 'اغسل الآن',
+    servicestatus: 'Service Status',
 
     // Schedule Wash
     time: 'زمن',

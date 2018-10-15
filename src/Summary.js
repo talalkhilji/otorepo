@@ -7,6 +7,7 @@ const icAfterImage = require('./Image/ic_after_car.png');
 const icStar = require('./Image/ic_star.png');
 const icStarFill = require('./Image/ic_star_fill.png');
 const icBack = require('./Image/ic_back.png');
+const icClose = require('./Image/ic_close.png');
 const globleString = require('./language/languageText');
 const strings = globleString.default.strings;
 
@@ -16,9 +17,9 @@ render() {
     return (
       <View style={mainContainer}>
         <CustomStatusBar
-          firstIcon={icBack}
+          secondIcon={icClose}
           title='SUMMARY'
-          onPressFirstIcon={() => this.props.navigation.goBack()}
+          onPressSecondIcon={() => this.props.navigation.goBack()}
         />
         <View style={{ flex: 1, alignItems: 'center', padding: 20 }} >
           <View style={{ flex: 1, padding: 10 }}>

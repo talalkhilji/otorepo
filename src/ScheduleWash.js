@@ -3,14 +3,16 @@ import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity, Platform, 
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import Toast from 'react-native-simple-toast';
+import Dash from 'react-native-dash';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
-import { CustomItemStatusBar, Button, WhiteBg, Search } from './common';
+import { CustomItemStatusBar, Button, WhiteBg, Search, OrangeBg } from './common';
 
 const mapTemplate = require('./Image/mapTemplate.png');
 const icUpDownArrow = require('./Image/ic_up_down_arrow.png');
 const icSearch = require('./Image/ic_search.png');
 const globleString = require('./language/languageText');
 const icCorrect = require('./Image/ic_correct_white.png');
+const icClose = require('./Image/ic_close.png');
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
 const { width } = Dimensions.get('window');
 const strings = globleString.default.strings;
@@ -29,12 +31,18 @@ export default class ScheduleWash extends React.Component {
       time: moment(),
       isDatePickerVisible: false,
       isTimePickerVisible: false,
-      hour: '',
-      minute: '',
-      ampm: '',
+      hour: moment().format('hh'),
+      minute: moment().format('mm'),
+      ampm: moment().format('a'),
       day: moment().format('DD'),
       month: moment().format('MMM'),
-      year: moment().format('YYYY')
+      year: moment().format('YYYY'),
+      mapRegion: {
+          latitude: userDetails.currentCoordinates.latitude,
+          longitude: userDetails.currentCoordinates.longitude,
+          latitudeDelta: 0.015,
+          longitudeDelta: 0.0121
+      }
     };
   }
   openChooseServiceScreen() {
@@ -87,20 +95,57 @@ export default class ScheduleWash extends React.Component {
     const { mainContainer, datetimeViewContainer, datetimeTextContainer, viewStyle, container, statusTextContainer, roundTextContainer, selectedBgContainer, imageContainer } = styles;
     return (
       <View style={mainContainer}>
+        <CustomItemStatusBar 
+          secondIcon={icClose}
+          onPressSecondIcon={() => this.props.navigation.goBack()}
+          isLocation />
         <View style={{ flex: 1, justifyContent: 'space-between', backgroundColor: '#f3f6f9' }}>
-          <Image source={mapTemplate} style={{ position: 'absolute', width }} />
-          <View>
-            <CustomItemStatusBar isLocation />
-            {/*
+         {/* <View>
+            
             <View style={{ marginTop: 15 }}>
               <Search
                 firstIcon={icSearch}
                 placeholder='Search..'
               />
             </View>
-          */}
+          
+          </View>*/}
+          <View style={[styles.container]}>
+            <MapView
+            provider={PROVIDER_GOOGLE}
+            style={styles.map}
+            region={this.state.mapRegion}
+            onRegionChangeComplete={() => this.marker ? this.marker.showCallout() : ''}
+          >
+            <Marker identifier='current_location' 
+                    ref={marker => (this.marker = marker)}
+                    coordinate={this.state.userDetails.currentCoordinates} 
+                    image={require('./Image/ic_logo_1.png')}
+                    >
+
+               <Callout tooltip={true}>
+               <OrangeBg>
+                <View style={{ flex: 1, flexDirection: 'row'}}>
+                  <View style={{ padding: 10, flex: 8, flexDirection: 'row'}}>
+                    <View style={{ flex: 5, Direction: 'column', justifyContent: 'center', }}>
+                      <Text style={[styles.packageNameContainer, { color: '#FFFFFF' }]}>Here I am</Text>
+                    </View>
+                  </View>
+                  <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+                    <View style={styles.topOval} />
+                    <Dash dashColor='#F2B568' style={styles.dashContainer} />
+                    <View style={styles.bottomOval} />
+                  </View>
+                  <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center', paddingLeft: 0, paddingRight: 8 }}>
+                    <Text style={styles.packagesNumberContainer}><Text style={{fontSize: 20}}>45</Text> mins</Text>
+                  </View>
+                </View>  
+                </OrangeBg>
+               </Callout>
+            </Marker>
+          </MapView>
           </View>
-          <View style={{ padding: 10 }}>
+          <View style={{ padding: 10, position: 'absolute', bottom: 0, width: width }}>
             <View style={{ paddingLeft: 10, paddingRight: 10 }}>
               <WhiteBg>
                 <View style={{ flex: 1, }}>
@@ -229,5 +274,32 @@ const styles = StyleSheet.create({
   colonSeparator: {
     color: '#3b3b3b',
     marginTop: 3
-  }
+  },
+  packagesNumberContainer: {
+    padding: 3,
+    fontSize: 11,
+    fontFamily: 'Roboto',
+    color: '#fbfcfd'
+  },
+  dashContainer: {
+    width: 1,
+    flex: 1,
+    flexDirection: 'column',
+  },
+  topOval: {
+        height: 6,
+        width: 14,
+        borderBottomLeftRadius: 5,
+        borderBottomRightRadius: 5,
+        backgroundColor: '#f2f1f2'
+  },
+  bottomOval: {
+        height: 6,
+        width: 14,
+        borderTopLeftRadius: 15,
+        borderTopRightRadius: 15,
+        backgroundColor: '#f2f1f2'
+  },
+  container: { ... StyleSheet.absoluteFillObject },
+  map: { ...StyleSheet.absoluteFillObject }
 });

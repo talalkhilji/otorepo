@@ -19,7 +19,7 @@ export default class MyOrders extends React.Component {
   async componentDidMount(){
     let customerOrders = await getCustomerOrders();
 
-    console.log(customerOrders);
+    //console.log(customerOrders);
     this.setState({customerOrders});
   }
 

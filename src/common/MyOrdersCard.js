@@ -26,7 +26,7 @@ const MyOrdersCard = ({
       </View>
 
       <View style={{ flex: 5, flexDirection: 'column', padding: 15 }} >
-        <Text style={styles.monthContainer}>{carName}<Text> MONTH </Text></Text>
+        <Text style={styles.monthContainer}>{carName}<Text> </Text></Text>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Image source={icCorrect} />
           <Text style={styles.washesTextContainer}>{washType}</Text>

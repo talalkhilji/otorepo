@@ -6,6 +6,7 @@ const Button = ({
     label,
     onPress,
     imgSource,
+    buttonText
   }) => (
 
       <View style={[styles.gradientContainer]}>
@@ -17,7 +18,7 @@ const Button = ({
           style={styles.linearGradient}
         >
           { label ?
-            <Text style={styles.buttonText}>{label}</Text> :
+            <Text style={buttonText || styles.buttonText}>{label}</Text> :
             <Image source={imgSource} style={styles.imageContainer} />}
         </LinearGradient>
         </TouchableOpacity>

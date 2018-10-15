@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, Dimensions, Platform, StatusBar, AsyncStorage, TouchableOpacity } from 'react-native';
-import { CustomItemStatusBar, Search, FeedBack, OrderDone, Button, ButtonSmall, BlueRoundBg, Get, getCustomerVehicles, SearchAutoComplete, windowHeight } from './common';
+import { View, Text, Image, StyleSheet, Dimensions, Platform, StatusBar, AsyncStorage, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
+import { CustomItemStatusBar, Search, FeedBack, OrderDone, Button, ButtonSmall, BlueRoundBg, Get, getCustomerVehicles, SearchAutoComplete, windowHeight, OrangeBg, addLocation } from './common';
 import FlipToggle from 'react-native-flip-toggle-button';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import Dash from 'react-native-dash';
 import Toast from 'react-native-simple-toast';
-import { OrangeBg } from './common';
+import moment from 'moment';
 
 const mapTemplate = require('./Image/mapTemplate.png');
 const icDownArrow = require('./Image/ic_down_arrow.png');
@@ -32,13 +32,13 @@ export default class Home extends React.Component {
     let newOrderDetails = props.navigation.state.params ? 
                                                          (props.navigation.state.params.newOrderDetails ? 
                                                             props.navigation.state.params.newOrderDetails : {}) :
-                                                         {};
+                                                         null;
 
     this.state = {
       selectVehicleHeight: null,
       mapRegion: {
-              latitude: 37.78825,
-              longitude: -122.4324,
+              latitude: 25.276987,
+              longitude: 55.296249,
               latitudeDelta: 0.015,
               longitudeDelta: 0.0121,
             },
@@ -47,11 +47,12 @@ export default class Home extends React.Component {
                             longitude: -122.4324
                           },
       allowMarkers: false,
-      vehicles: {},
+      vehicles: [],
       vehicle_id: null,   
       location_name: null, 
       googleApiKey: 'AIzaSyAlYrDbenRCp4MI3nfekyiawLfCdihXboM',
-      newOrderDetails: newOrderDetails          
+      newOrderDetails: newOrderDetails,
+      modal: true        
     };
   }
 
@@ -59,6 +60,18 @@ export default class Home extends React.Component {
   async componentDidMount(){
     let vehicles = await getCustomerVehicles(); 
     this.setState({vehicles: vehicles});
+
+
+    /*let locationData = {
+                            "title": "tesst...",
+                            "latitude": 111.222,
+                            "longitude": 222.222
+                         };
+
+      
+      let locationResponse = await addLocation(locationData);
+
+      console.log(locationResponse);*/
   }
 
   openServiceStatusScreen() {
@@ -121,6 +134,14 @@ export default class Home extends React.Component {
   }
 
 
+  openServiceStatus(){
+    this.setState({modal: false});
+
+    const { navigate } = this.props.navigation;
+    navigate('ServiceStatus');
+  }
+
+
   userCurrentLocation = async () => {
     navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -169,6 +190,46 @@ export default class Home extends React.Component {
     const { mainContainer, textContainer, buttonStyle, viewStyle, container, statusTextContainer, roundTextContainer, selectedBgContainer, imageContainer } = styles;
     return (
       <View style={mainContainer}>
+      {this.state.newOrderDetails &&
+          <Modal
+            transparent={true}
+            animationType={'none'}
+            visible={this.state.modal}
+            onRequestClose={() => {console.log('close modal')}}>
+            <View style={styles.modalBackground}>
+              <View style={styles.activityIndicatorWrapper}>
+                  <View>
+                    <Image source={require('./Image/ic_logo_new.png')} style={{width: 110, height: 120}} />
+                  </View>
+                  <View style={{marginTop: 20}}>
+                    <Text style={styles.thankYouText}>THANK YOU</Text>
+
+                    <View style={{marginTop: 15}}>
+                      <Text style={styles.teamText}>Our team will be there at</Text>
+                    </View>
+
+                    <View style={{marginTop: 15}}>
+                      <Text style={styles.timeText}>{this.state.newOrderDetails.washing_time} - {moment(this.state.newOrderDetails.washing_date).format('dddd, DD MMMM, YYYY')}</Text>
+                    </View>
+
+                    <View style={{marginTop: 15}}>
+                      <Text style={styles.orderText}>ORDER NO.: <Text style={{fontWeight: 'bold', letterSpacing: 0.8}}>{this.state.newOrderDetails.id}</Text></Text>
+                    </View>
+
+                    <View style={{marginTop: 15}}>
+                      <Text style={styles.teamText}>Press the button below to track the service status.</Text>
+                    </View>
+                    <View style={{marginTop: 5}}>
+                      <Button 
+                        label={strings.servicestatus} 
+                        onPress={this.openServiceStatus.bind(this)} />
+                    </View>    
+
+                  </View>  
+              </View>
+            </View>
+          </Modal>
+        }
         <CustomItemStatusBar isLocation />
         <View style={{ flex: 0, justifyContent: 'space-between', backgroundColor: '#f3f6f9', height: windowHeight }}>
         <View style={[styles.container]}>
@@ -319,6 +380,7 @@ export default class Home extends React.Component {
             </View>
             <View style={{ paddingLeft: 15, paddingRight: 15 }} >
               <SearchAutoComplete 
+                search={false}
                 placeholder='Nissan Maxima' 
                 secondIcon={icDownArrow} 
                 secondAlternateIcon={icUpArrow} 
@@ -460,5 +522,58 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 15,
         borderTopRightRadius: 15,
         backgroundColor: '#f2f1f2'
+  },
+  modalBackground: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    backgroundColor: '#00000040'
+  },
+  activityIndicatorWrapper: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 0,
+    width: width,
+    height: windowHeight/1.5,
+    padding: 25
+  },
+  thankYouText:{
+    fontFamily: "Montserrat",
+    fontSize: 20,
+    fontWeight: "bold",
+    fontStyle: "normal",
+    letterSpacing: 0.9,
+    textAlign: "center",
+    color: "#5f7290"
+  },
+  teamText: {
+    fontFamily: "Montserrat",
+    fontSize: 15,
+    fontWeight: "normal",
+    fontStyle: "normal",
+    letterSpacing: 0,
+    textAlign: "center",
+    color: "#5f7290"
+  },
+  timeText: {
+    fontFamily: "Montserrat",
+    fontSize: 16,
+    fontWeight: "normal",
+    fontStyle: "normal",
+    letterSpacing: 0,
+    textAlign: "center",
+    color: "#f2b568"
+  },
+  orderText: {
+    fontFamily: "Montserrat",
+    fontSize: 16,
+    fontWeight: "normal",
+    fontStyle: "normal",
+    letterSpacing: 0,
+    textAlign: "center",
+    color: "#5f7290"
   }
 });

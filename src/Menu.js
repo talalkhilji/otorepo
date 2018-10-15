@@ -49,7 +49,7 @@ export default function Menu({ onItemSelected, userName, languageValue, onToggle
             <View style={{ justifyContent: 'center' }}>
               <Text style={{ fontSize: 14, fontFamily: 'Roboto-Medium', color: '#FFFFFF' }}>{userName}</Text>
             </View>
-            <TouchableOpacity onPress={() => onItemSelected('MyProfile')} >
+            <TouchableOpacity onPress={() => onItemSelected('My Profile')} >
             <Image
               style={{ height: 20, width: 20, tintColor: '#FFFFFF' }}
               source={icEditProfile}

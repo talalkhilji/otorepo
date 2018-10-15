@@ -14,6 +14,7 @@ import moment from 'moment';
 
 const icRefresh = require('./Image/ic_refresh.png');
 const icCorrect = require('./Image/ic_correct_white.png');
+const icClose = require('./Image/ic_close.png');
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
 const { width } = Dimensions.get('window');
 
@@ -183,7 +184,10 @@ export default class ChooseService extends React.Component {
     return (
       <View style={mainContainer}>
         <View>
-          <CustomItemStatusBar isService />
+          <CustomItemStatusBar 
+          secondIcon={icClose}
+          onPressSecondIcon={() => this.props.navigation.goBack()}
+          isService />
         </View>
         <ScrollView style={listContainer}>
           {this.renderWashData()}

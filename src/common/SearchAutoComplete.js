@@ -122,16 +122,18 @@ render(){
           secondAlternateIcon,
           onPressSecondIcon,
           data,
-          dataProps
+          dataProps,
+          search
           } = this.props;
     const rows = this.dataSource.cloneWithRows(this.state.filterData || []);
           
     return (      
       <View style={[styles.transperantContainer, {height: this.state.dropDownHeight}]}>
-        <View style={styles.transperantInnerContainer}>
+        <View style={search ? styles.transperantInnerContainer : styles.transperantDropDownInnerContainer}>
           <TouchableOpacity onPress={onPressFirstIcon}>
             {firstIcon ? <Image source={firstIcon} /> : <View /> }
           </TouchableOpacity>
+          {search &&
             <TextInput
               secureTextEntry={secureTextEntry}
               placeholder={placeholder}
@@ -144,10 +146,14 @@ render(){
               style={styles.transperantButtonText}
               onChangeText={ (value) => this.find(value)}
             />
+          }
           <TouchableOpacity onPress={() => this.toggleDropDown()}>
-            <View style={{width: 20, height: 10, paddingTop: 2}}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              {!search &&
+                  <Text style={[styles.transperantButtonText, { textAlign: 'left' }]}>{this.state.text ? this.state.text : placeholder}</Text>
+              }
               {secondIcon ? <Image source={this.state.dropDownIcon} /> : <View /> }
-            </View>  
+            </View>    
           </TouchableOpacity>
         </View>  
         {this.state.dropDown && 
@@ -168,6 +174,7 @@ render(){
 
 const styles = StyleSheet.create({
   transperantContainer: {
+    flex: 1,
     paddingLeft: 10,
     paddingRight: 10,
     height: 45,
@@ -184,8 +191,14 @@ const styles = StyleSheet.create({
     margin: 10
   },
   transperantInnerContainer: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    height: 45
+  },
+  transperantDropDownInnerContainer: {
+    paddingTop: 12,
+    paddingRight: 5,
     height: 45
   },
   transperantButtonText: {

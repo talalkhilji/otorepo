@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Platform, StatusBar } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Platform, StatusBar, KeyboardAvoidingView } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Toast from 'react-native-simple-toast';
 import moment from 'moment';
-import { WhiteBg, CustomItemStatusBar, AlbumDetail, AlbumDetailSection, Input, placeOrder, Loader, Post} from './common';
+import { WhiteBg, CustomItemStatusBar, AlbumDetail, AlbumDetailSection, Input, placeOrder, Loader, addLocation} from './common';
 
 
 const imgWash = require('./Image/img_wash.png');
@@ -14,6 +14,7 @@ const icCash = require('./Image/ic_cash.png');
 const icCreditCard = require('./Image/ic_credit_card.png');
 const globleString = require('./language/languageText');
 const icCorrect = require('./Image/ic_correct_white.png');
+const icClose = require('./Image/ic_close.png');
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
 const { width } = Dimensions.get('window');
 const strings = globleString.default.strings;
@@ -82,10 +83,19 @@ export default class Confirmation extends React.Component {
       return;
     }
 
-
-    this.setState({loading: true});
-
     if(mode === 'payment'){
+
+      this.setState({loading: true});
+
+
+      /*let locationData = {
+                            "title": this.state.userDetails.location_name,
+                            "latitude": this.state.userDetails.currentCoordinates.latitude,
+                            "longitude": this.state.userDetails.currentCoordinates.longitude
+                         };
+
+      
+      let locationResponse = await addLocation(locationData);    */               
 
       let data = { 
                   "location_id": 1,
@@ -100,20 +110,18 @@ export default class Confirmation extends React.Component {
                   "special_request": this.state.specialRequest
                 };
 
-
-      //console.log(JSON.stringify(data));          
-      //response = await Post({url: 'order', data:data});
-
      let response = await placeOrder(data);
 
      this.setState({loading: false});
 
 
+
      if(response.status === 201){
-        navigate({key: 'HomeApp', 
-                routeName: 'HomeApp', 
+        //console.log(JSON.stringify(response.data));
+        navigate({key: 'Home', 
+                routeName: 'Home', 
                 params: {
-                  newOrderDetails: response.data.content
+                  newOrderDetails: response.data.contents[0]
                 }
         });
      }
@@ -132,8 +140,12 @@ export default class Confirmation extends React.Component {
 
      return (
       <View style={topContainer}>
-        <CustomItemStatusBar isConfirmation />
+        <CustomItemStatusBar 
+          secondIcon={icClose}
+          onPressSecondIcon={() => this.props.navigation.goBack()}
+          isConfirmation />
         <Loader loading={this.state.loading} message='Please wait..' />
+        <KeyboardAvoidingView style={{flex: 1}} behavior="padding" enabled>
         <ScrollView>
           <View style={mainContainer}>
             <WhiteBg>
@@ -182,6 +194,7 @@ export default class Confirmation extends React.Component {
           </AlbumDetail>
 
         </ScrollView>
+        </KeyboardAvoidingView>
         <View style={{ padding: 15 }}>
           <View style={{ flexDirection: 'row', marginLeft: 10, marginRight: 10 }}>
             <View style={{ flex: 1, flexDirection: 'row' }} >

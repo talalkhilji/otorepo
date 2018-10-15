@@ -5,6 +5,7 @@ import { CustomStatusBar, WhiteButton, Button, ButtonSmall, } from './common'
 
 const icCorrect = require('./Image/ic_correct.png');
 const icBack = require('./Image/ic_back.png');
+const icClose = require('./Image/ic_close.png');
 const globleString = require('./language/languageText');
 const strings = globleString.default.strings;
 
@@ -18,9 +19,9 @@ export default class ServiceStatus extends React.Component {
     return (
       <View style={mainContainer}>
         <CustomStatusBar
-          firstIcon={icBack}
+          secondIcon={icClose}
           title='SERVICE STATUS'
-          onPressFirstIcon={() => this.props.navigation.goBack()}
+          onPressSecondIcon={() => this.props.navigation.goBack()}
         />
         <View style={{ flex: 1, justifyContent: 'space-between', }}>
           <View style={{ padding: 20, paddingTop: 50 }}>
@@ -56,10 +57,10 @@ export default class ServiceStatus extends React.Component {
           </View>
           <View style={{ flexDirection: 'row', padding: 20 }}>
             <View style={{ flex: 1 }}>
-              <WhiteButton label={strings.home} />
+              <WhiteButton label={strings.home} onPress={() => this.props.navigation.navigate('Home')} />
             </View>
             <View style={{ flex: 1 }}>
-              <Button label={strings.myOrders} />
+              <Button label={strings.myOrders} onPress={() => this.props.navigation.navigate('MyOrders')} />
             </View>
           </View>
       </View>

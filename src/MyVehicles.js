@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import DialogBox from 'react-native-dialogbox';
-import { CustomStatusBar, VehicleComponent } from './common'
+import { CustomStatusBar, VehicleComponent, getCustomerVehicles } from './common'
 import AddNewVehicles from './AddNewVehicles';
 
 
@@ -10,9 +10,18 @@ const icAddNewVehicle = require('./Image/ic_add_new_vehicle.png');
 
 export default class MyVehicles extends React.Component {
   constructor(props){
-    super(props)
+    super(props);
+
+    this.state = {
+      vehicles: []
+    };
 
   }
+
+ async componentDidMount(){
+    let vehicles = await getCustomerVehicles(); 
+    this.setState({vehicles: vehicles});
+}
 openAddNewVehicleScreen() {
     const { navigate } = this.props.navigation;
     navigate('AddNewVehicles', {
@@ -55,24 +64,17 @@ render() {
           />
           <ScrollView>
             <View style={{ padding: 15, paddingTop: 25 }}>
-              <VehicleComponent
-                companyName='Toyoto'
-                carName='Camery'
-                manufactureYear='2017'
-                numberPlate='F DUBAI 12928'
-                carColor='WHITE'
-                onDeletePress={() => {this.openDialog()}}
-                onEditPress={() => {this.openDialog()}}
-              />
-              <VehicleComponent
-                companyName='Toyoto'
-                carName='Camery'
-                manufactureYear='2017'
-                numberPlate='F DUBAI 12928'
-                carColor='WHITE'
-                onDeletePress={() => {this.openDialog()}}
-                onEditPress={() => {this.openDialog()}}
-              />
+            {this.state.vehicles.map(vehicle =>
+                <VehicleComponent
+                  companyName={vehicle.make_name}
+                  carName={vehicle.model_name}
+                  manufactureYear={vehicle.model_years}
+                  numberPlate={`${vehicle.plate_place_code} ${vehicle.plate_city} ${vehicle.plate_number}`}
+                  carColor={vehicle.color_name}
+                  onDeletePress={() => {this.openDialog()}}
+                  onEditPress={() => {this.openDialog()}}
+                />
+            )}
             </View>
           </ScrollView>
           <DialogBox ref={dialogbox => { this.dialogbox = dialogbox }}/>
