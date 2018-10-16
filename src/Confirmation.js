@@ -83,22 +83,22 @@ export default class Confirmation extends React.Component {
       return;
     }
 
-    if(mode === 'payment'){
+    if(mode === 'Cash'){
 
       this.setState({loading: true});
 
 
-      /*let locationData = {
+      let locationData = {
                             "title": this.state.userDetails.location_name,
                             "latitude": this.state.userDetails.currentCoordinates.latitude,
                             "longitude": this.state.userDetails.currentCoordinates.longitude
                          };
 
       
-      let locationResponse = await addLocation(locationData);    */               
+      let locationResponse = await addLocation(locationData);             
 
       let data = { 
-                  "location_id": 1,
+                  "location_id": locationResponse.data.contents[0].id,
                   "vehicle_id": this.state.userDetails.vehicle_id, 
                   "service_id": this.state.service.id,
                   "services": services.join(','),
@@ -107,7 +107,8 @@ export default class Confirmation extends React.Component {
                   "price": this.state.price, 
                   "villa_apartment_no": this.state.villApartmentNo, 
                   "remarks": this.state.remarks, 
-                  "special_request": this.state.specialRequest
+                  "special_request": this.state.specialRequest,
+                  "payment_mode": mode
                 };
 
      let response = await placeOrder(data);
@@ -199,7 +200,7 @@ export default class Confirmation extends React.Component {
           <View style={{ flexDirection: 'row', marginLeft: 10, marginRight: 10 }}>
             <View style={{ flex: 1, flexDirection: 'row' }} >
               <View style={[styles.gradientContainer]}>
-                <TouchableOpacity onPress={this.openPaymentScreen.bind(this, 'payment')}>
+                <TouchableOpacity onPress={this.openPaymentScreen.bind(this, 'Cash')}>
                   <LinearGradient
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
@@ -216,7 +217,7 @@ export default class Confirmation extends React.Component {
             </View>
             <View style={{ flex: 1, flexDirection: 'row' }} >
               <View style={[styles.gradientContainer]}>
-                <TouchableOpacity onPress={this.openPaymentScreen.bind(this, 'creditCard')}>
+                <TouchableOpacity onPress={this.openPaymentScreen.bind(this, 'Credit Card')}>
                   <LinearGradient
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}

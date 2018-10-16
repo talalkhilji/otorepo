@@ -106,7 +106,7 @@ const addLocation = async (data) => {
   data.customer_id = userId;
 
   let response = await Post({url: `location`, data: data}); 
-  return sendResponse(response);
+  return response;
 }
 
 export { Get, 

@@ -66,13 +66,13 @@ render() {
           {this.state.customerOrders.map((order) => 
             <View key={order.id}>
                <MyOrdersCard
-                carName='SILVER MAXIMA'
+                carName={`${order.make_name} ${order.model_name} ${order.model_years}`.toUpperCase()}
                 washType={order.service_title}
-                paymentType='Cash on Delivery'
+                paymentType={`${order.payment_mode === 'Cash' ? 'Cash on Delivery' : 'Credit Card'}`}
                 orderNo={`Order No.: ${order.id}`}
                 dateTime={`${moment(order.washing_date).format('dddd, Do MMM, YYYY')} @ ${order.washing_time}`}
                 status='STARTING JOB'
-                paymentMethod='CASH'
+                paymentMethod={`${order.payment_mode.toUpperCase() || 'CASH'}`}
                 paymentMethodIcon={icCash}
                 price={order.price}
                 onPress={() => {this.openDialog()}}
