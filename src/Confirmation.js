@@ -44,13 +44,13 @@ export default class Confirmation extends React.Component {
                                                          props.navigation.state.params.price :
                                                          0;   
 
-    let washingDate = 'washingDate' in props.navigation.state.params ? 
-                                                         props.navigation.state.params.washingDate :
-                                                         moment();
+    let washDate =  props.navigation.state.params ? 
+                                                  (props.navigation.state.params.washDate ? moment(props.navigation.state.params.washDate) : moment()) :
+                                                   moment();  
 
-    let washingTime = 'washingTime' in props.navigation.state.params ? 
-                                                         props.navigation.state.params.washingTime :
-                                                         moment().add('45', 'minutes');                                                                                                                                                              
+    let washTime =  props.navigation.state.params ? 
+                                                  (props.navigation.state.params.washTime ? moment(props.navigation.state.params.washTime) : moment().add('45', 'minutes')) :
+                                                   moment().add('45', 'minutes');                                                                                                                                                           
 
     this.state = {
         userDetails: userDetails,
@@ -60,15 +60,15 @@ export default class Confirmation extends React.Component {
         villApartmentNo: '',
         remarks: '',
         specialRequest: '',
-        washingDate: washingDate,
-        washingTime: washingTime,
+        washDate: washDate,
+        washTime: washTime,
         loading: false
     };
   }
 
 
   componentDidMount(){
-    //console.log(this.state.washingDate, this.state.washingTime);
+    //console.log(this.state.washDate, this.state.washTime);
   }
 
   async openPaymentScreen(mode) {
@@ -102,8 +102,8 @@ export default class Confirmation extends React.Component {
                   "vehicle_id": this.state.userDetails.vehicle_id, 
                   "service_id": this.state.service.id,
                   "services": services.join(','),
-                  "washing_date": moment(this.state.washingDate).format('YYYY-MM-DD'), 
-                  "washing_time": moment(this.state.washingTime).format('hh:mm a'),
+                  "washing_date": moment(this.state.washDate).format('YYYY-MM-DD'), 
+                  "washing_time": moment(this.state.washTime).format('hh:mm a'),
                   "price": this.state.price, 
                   "villa_apartment_no": this.state.villApartmentNo, 
                   "remarks": this.state.remarks, 

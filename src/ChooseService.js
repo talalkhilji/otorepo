@@ -113,8 +113,8 @@ export default class ChooseService extends React.Component {
                                                         vehicleDetails: this.state.vehicleDetails,
                                                         service: service,
                                                         price:price,
-                                                        washDate: moment(this.state.washDate).format('YYYY-MM-DD'),
-                                                        washTime: moment(this.state.washTime).format('hh:mm a'),
+                                                        washDate: moment(this.state.washDate),
+                                                        washTime: moment(this.state.washTime),
                                                    }});
   }
 
