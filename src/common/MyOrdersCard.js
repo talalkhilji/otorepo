@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { WhiteBg, WhiteButtonSmall } from '../common';
+import { WhiteBg, WhiteButtonSmall, ButtonSmall } from '../common';
 import Dash from 'react-native-dash';
 
 const icCorrect = require('../Image/ic_correct.png');
@@ -17,7 +17,8 @@ const MyOrdersCard = ({
     paymentMethod,
     paymentMethodIcon,
     price,
-    onPress
+    onPressCancel,
+    onPressStatus
   }) => (
     <WhiteBg>
 
@@ -25,33 +26,37 @@ const MyOrdersCard = ({
         <View style={styles.RectangleShapeView} />
       </View>
 
-      <View style={{ flex: 5, flexDirection: 'column', padding: 15 }} >
-        <Text style={styles.monthContainer}>{carName}<Text> </Text></Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image source={icCorrect} />
-          <Text style={styles.washesTextContainer}>{washType}</Text>
-        </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image source={icCorrect} />
-          <Text style={styles.washesTextContainer}>{paymentType}</Text>
-        </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image source={icCorrect} />
-          <Text style={styles.washesTextContainer}>{orderNo}</Text>
-        </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image source={icCorrect} />
-          <Text style={styles.washesTextContainer}>{dateTime}</Text>
-        </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, }}>
-          <Text style={styles.packagesNumberContainer}>{strings.status}</Text>
-          <Text style={[styles.washesTextContainer, { color: '#F2B568' }]}>{status}</Text>
-        </View>
-        <View style={{ flexDirection: 'row' }}>
-          <View style={{ flex: 3, marginTop: 10 }}>
-          <WhiteButtonSmall label={strings.cancelOrder} onPress={onPress}/>
+      <View style={{ flex: 9, flexDirection: 'column'}} >
+        <View style={{padding: 15}}>
+          <Text style={styles.monthContainer}>{carName}<Text> </Text></Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Image source={icCorrect} />
+            <Text style={styles.washesTextContainer}>{washType}</Text>
           </View>
-          <View style={{ flex: 1 }} />
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Image source={icCorrect} />
+            <Text style={styles.washesTextContainer}>{paymentType}</Text>
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Image source={icCorrect} />
+            <Text style={styles.washesTextContainer}>{orderNo}</Text>
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Image source={icCorrect} />
+            <Text style={styles.washesTextContainer}>{dateTime}</Text>
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, }}>
+            <Text style={styles.packagesNumberContainer}>{strings.status}</Text>
+            <Text style={[styles.washesTextContainer, { color: '#F2B568' }]}>{status}</Text>
+          </View>
+        </View>  
+        <View style={{ flexDirection: 'row' }}>
+          <View style={{ flex: 3 }}>
+            <ButtonSmall label={strings.status} customStyles={{margin: 5, marginLeft: 10, marginBottom: 15}} onPress={onPressStatus}/>
+          </View>
+          <View style={{ flex: 3 }}>
+            <WhiteButtonSmall label={strings.cancelOrder} customStyles={{margin: 5, marginBottom: 15}} onPress={onPressCancel}/>
+          </View>
         </View>
       </View>
       <View style={{ flexDirection: 'column', alignItems: 'center' }}>
@@ -104,15 +109,15 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   topOval: {
-        height: 14,
-        width: 30,
+        height: 9,
+        width: 25,
         borderBottomLeftRadius: 15,
         borderBottomRightRadius: 15,
         backgroundColor: '#f2f1f2'
   },
   bottomOval: {
-        height: 14,
-        width: 30,
+        height: 9,
+        width: 25,
         borderTopLeftRadius: 15,
         borderTopRightRadius: 15,
         backgroundColor: '#f2f1f2'

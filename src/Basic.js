@@ -62,7 +62,34 @@ const MyOrdersAppSample = props => (
   <MyOrders navigation={props.navigation} />
 );
 const MyOrdersApp = StackNavigator({
-  MyOrdersAppSample: { screen: MyOrdersAppSample },
+  MyOrders: { screen: MyOrders },
+  Home: { screen: HomeAppSample },
+  ServiceStatus: { screen: ServiceStatus },
+  Summary: { screen: Summary },
+  AddNewVehicles: { screen: AddNewVehicles },
+  LicensePlateDetails: { screen: LicensePlateDetails },
+  Packages: { screen: Packages },
+  SubscriptionToPackages: { screen: SubscriptionToPackages },
+  ScheduleWash: { screen: ScheduleWash },
+  ChooseService: { screen: ChooseService },
+  Confirmation: { screen: Confirmation },
+  Payment: { screen: Payment }
+}, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
+
+
+const MyVehiclesApp = StackNavigator({
+  MyVehicles: { screen: MyVehicles },
+  Home: { screen: HomeAppSample },
+  ServiceStatus: { screen: ServiceStatus },
+  Summary: { screen: Summary },
+  AddNewVehicles: { screen: AddNewVehicles },
+  LicensePlateDetails: { screen: LicensePlateDetails },
+  Packages: { screen: Packages },
+  SubscriptionToPackages: { screen: SubscriptionToPackages },
+  ScheduleWash: { screen: ScheduleWash },
+  ChooseService: { screen: ChooseService },
+  Confirmation: { screen: Confirmation },
+  Payment: { screen: Payment }
 }, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
 
 const PaymentCardsAppSample = props => (
@@ -159,11 +186,6 @@ export default class Basic extends Component {
         }}
       />
     );
-    const MyVehiclesApp = StackNavigator({
-      MyVehiclesAppSample: { screen: MyVehiclesAppSample },
-      AddNewVehicles: { screen: AddNewVehicles },
-      LicensePlateDetails: { screen: LicensePlateDetails }
-    }, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
 
     if (this.state.selectedItem === 'Home') {
       return (<HomeApp />);

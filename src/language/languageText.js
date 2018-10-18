@@ -117,6 +117,7 @@ const strings = new LocalizedStrings({
     selectModel: 'SELECT MODEL',
     manufacturerYear: 'MANUFACTURER YEAR',
     selectVehicleColor: 'SELECT VEHICLE COLOR',
+    selectVehicleType: 'SELECT VEHICLE TYPE',
     contiue: 'Continue',
 
     // License plate details
@@ -272,6 +273,7 @@ const strings = new LocalizedStrings({
     selectManufacturer: 'اختر الشركة المصنعة',
     selectModel: 'اختر النموذج',
     manufacturerYear: 'عام التصنيع',
+    selectVehicleType: 'SELECT VEHICLE TYPE',
     selectVehicleColor: 'اختر لون السيارة',
     contiue: 'استمر',
 

@@ -55,7 +55,7 @@ export default class ServiceStatus extends React.Component {
             <ButtonSmall label={strings.pleaseInputReview} onPress={this.openSummaryScreen.bind(this)} />
           </View>
           </View>
-          <View style={{ flexDirection: 'row', padding: 20 }}>
+          <View style={{ flexDirection: 'row', padding: 20, paddingTop: 0 }}>
             <View style={{ flex: 1 }}>
               <WhiteButton label={strings.home} onPress={() => this.props.navigation.navigate('Home')} />
             </View>

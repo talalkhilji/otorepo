@@ -137,7 +137,7 @@ export default class ScheduleWash extends React.Component {
                     <View style={styles.bottomOval} />
                   </View>
                   <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center', paddingLeft: 0, paddingRight: 8 }}>
-                    <Text style={styles.packagesNumberContainer}><Text style={{fontSize: 20}}>45</Text> mins</Text>
+                    <Text style={styles.packagesNumberContainer}><Text style={{fontSize: 20}}>{this.state.userDetails.locationDistanceTime}</Text> {this.state.userDetails.locationDistanceText}</Text>
                   </View>
                 </View>  
                 </OrangeBg>

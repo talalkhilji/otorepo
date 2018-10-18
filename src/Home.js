@@ -1,12 +1,16 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, Dimensions, Platform, StatusBar, AsyncStorage, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
-import { CustomItemStatusBar, Search, FeedBack, OrderDone, Button, ButtonSmall, BlueRoundBg, Get, getCustomerVehicles, SearchAutoComplete, windowHeight, OrangeBg, addLocation } from './common';
+import { CustomItemStatusBar, Search, FeedBack, OrderDone, Button, ButtonSmall, BlueRoundBg, Get, getCustomerVehicles, SearchAutoComplete, windowHeight, maxHeightChk, OrangeBg, addLocation, Post } from './common';
 import FlipToggle from 'react-native-flip-toggle-button';
+import SideMenu from 'react-native-side-menu';
+import Menu from './Menu';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import Dash from 'react-native-dash';
 import Toast from 'react-native-simple-toast';
 import moment from 'moment';
+import {DOMParser} from 'xmldom';
+//import DeviceInfo from 'react-native-device-info';
 
 const mapTemplate = require('./Image/mapTemplate.png');
 const icDownArrow = require('./Image/ic_down_arrow.png');
@@ -50,7 +54,7 @@ export default class Home extends React.Component {
       vehicles: [],
       vehicle_id: null,   
       location_name: null, 
-      googleApiKey: 'AIzaSyAlYrDbenRCp4MI3nfekyiawLfCdihXboM',
+      googleApiKey: 'AIzaSyCHOJ-y4Q__IMjVQJ4ZKT4n3eO8TS7uGSk',
       newOrderDetails: newOrderDetails,
       modal: true        
     };
@@ -71,7 +75,86 @@ export default class Home extends React.Component {
       
       let locationResponse = await addLocation(locationData);
 
-      console.log(locationResponse);*/
+      console.log('location response', locationResponse);*/
+
+
+      /*let userData =  await AsyncStorage.getItem('userData');
+      let user = JSON.parse(userData);
+
+      let xml = `<?xml version="1.0" encoding="UTF-8"?>
+                <mobile>
+                  <store>20943</store>
+                  <key>Kjv3B-ZZ2m#R2zjK</key>
+                  <device>
+                    <type>${DeviceInfo.getManufacturer()}</type>
+                    <id>${DeviceInfo.getUniqueID()}</id>
+                    <agent>${DeviceInfo.getUserAgent()}</agent>
+                    <accept>${DeviceInfo.getUserAgent()}</accept>
+                  </device>
+                  <app>
+                    <name>OTO Serv</name>
+                    <version>1.0</version>
+                    <user>${user.id}</user>
+                    <id>${DeviceInfo.getUniqueID()}</id>
+                  </app>
+                  <tran>
+                    <test>1</test>
+                    <type>SALE</type>
+                    <class>ECOM</class>
+                    <cartid>1</cartid>
+                    <description>Test Transaction</description>
+                    <currency>AED</currency>
+                    <amount>11</amount>
+                    <ref></ref>
+                  </tran>
+                  <card>
+                    <number>4000000000000002</number>
+                    <expiry>
+                      <month>12</month>
+                      <year>2018</year>
+                    </expiry>
+                    <cvv>123</cvv>
+                  </card>
+                  <billing>
+                    <name>
+                      <title>Test</title>
+                      <first>${user.first_name}</first>
+                      <last>${user.last_name}</last>
+                    </name>
+                  <address>
+                    <line1>abc</line1>
+                    <line2>xyz</line2>
+                    <line3>123</line3>
+                    <city>${user.city}</city>
+                    <region>UAE</region>
+                    <country>UAE</country>
+                    <zip>123</zip>
+                  </address>
+                  <email>${user.email}</email>
+                  </billing>
+                </mobile>`;*/
+
+
+ //console.log(xml);                 
+
+
+//let response = await Post({url: 'https://secure.innovatepayments.com/gateway/mobile.xml', data: xml});
+
+//console.log('payment response: ',response);
+
+
+/*var doc = new DOMParser().parseFromString(
+    '<xml xmlns="a" xmlns:c="./lite">\n'+
+        '\t<child>test</child>\n'+
+        '\t<child></child>\n'+
+        '\t<child/>\n'+
+    '</xml>'
+    ,'text/xml');
+doc.documentElement.setAttribute('x','y');
+doc.documentElement.setAttributeNS('./lite','c:x','y2');
+var nsAttr = doc.documentElement.getAttributeNS('./lite','x')
+console.info(nsAttr)
+console.info(doc)*/
   }
 
   openServiceStatusScreen() {
@@ -104,7 +187,9 @@ export default class Home extends React.Component {
               params: { userDetails: { 
                           currentCoordinates: this.state.currentCoordinates,
                           vehicle_id: this.state.vehicle_id,
-                          location_name: this.state.location_name
+                          location_name: this.state.location_name,
+                          locationDistanceTime: this.state.locationDistanceTime,
+                          locationDistanceText: this.state.locationDistanceText
                         }
                       }
             });
@@ -146,6 +231,8 @@ export default class Home extends React.Component {
     navigator.geolocation.getCurrentPosition(
           (position) => {
 
+            this.calculateDistance(position.coords.latitude, position.coords.longitude);
+
             this.setState({
               locationServiceOn: true,
               allowMarkers: true,
@@ -172,6 +259,9 @@ export default class Home extends React.Component {
 
 
  selectLocation = (details) => {
+
+    this.calculateDistance(details.geometry.location.lat, details.geometry.location.lng);
+
     this.setState({allowMarkers: true, 
                                  mapRegion: {
                                   latitude:       details.geometry.location.lat,
@@ -184,6 +274,25 @@ export default class Home extends React.Component {
                                                      },
                                  location_name: details.formatted_address                    
                                 });
+  }
+
+
+  async calculateDistance(lat, lng){
+    let responseJson = await Get({url: `https://maps.googleapis.com/maps/api/distancematrix/json?
+                                        units=imperial
+                                        &origins=25.07557,55.14536
+                                        &destinations=${lat},${lng}
+                                        &key=${this.state.googleApiKey}`});
+
+    let locationDistance = responseJson.data.rows[0]['elements'][0].duration.text.split(' ');
+
+    console.log(responseJson);
+
+    this.setState({locationDistanceTime: locationDistance[0], locationDistanceText: locationDistance[1]}, () => {
+      if(this.marker){
+        this.marker.hideCallout();
+      }
+    });
   }
 
   render() {
@@ -260,7 +369,7 @@ export default class Home extends React.Component {
                     <View style={styles.bottomOval} />
                   </View>
                   <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center', paddingLeft: 0, paddingRight: 8 }}>
-                    <Text style={styles.packagesNumberContainer}><Text style={{fontSize: 20}}>45</Text> mins</Text>
+                    <Text style={styles.packagesNumberContainer}><Text style={{fontSize: 20}}>{this.state.locationDistanceTime || '♾️'}</Text> {this.state.locationDistanceText}</Text>
                   </View>
                 </View>  
                 </OrangeBg>
@@ -300,20 +409,21 @@ export default class Home extends React.Component {
                     }}
                     styles={{
                       textInputContainer: {
+                        marginLeft: 20,
+                        marginRight: 20,
                         paddingLeft: 10,
-                        paddingRight: 10,
                         height: 45,
                         flexDirection: 'row',
                         borderRadius: 10,
                         backgroundColor: '#FFFFFF',
-                        shadowColor: '#707070',
+                        shadowColor: 'rgba(35, 50, 74, 0.12)',
                         borderColor: '#FFFFFF',
                         shadowOffset: {
                           width: 0,
-                          height: 3
+                          height: 9
                         },
                         shadowRadius: 5,
-                        shadowOpacity: 0.3,
+                        shadowOpacity: 1,
                         margin: 5,
                         alignItems: 'center',
                         elevation: 2
@@ -324,14 +434,15 @@ export default class Home extends React.Component {
                         fontFamily: 'Lato-Regular',
                         color: '#BEBEBE',
                         marginTop: -1,
-                        paddingLeft: 10,
-                        paddingRight: 20
+                        borderWidth: 0,
+                        backgroundColor: '#FFFFFF'
                       },
                       predefinedPlacesDescription: {
                         color: '#000000',
                         fontFamily: "Lato",
                         fontWeight: 'bold',
-                        color: '#666666'
+                        color: '#666666',
+                        backgroundColor: '#FFFFFF'
                       },
                       listView: {
                         borderTopWidth: 1,
@@ -342,7 +453,9 @@ export default class Home extends React.Component {
                         backgroundColor: '#ffffff',
                         margin: 5,
                         marginTop: 0,
-                        borderRadius: 10
+                        borderRadius: 10,
+                        marginLeft: 20,
+                        marginRight: 20,
                       }
                     }}
                     //nearbyPlacesAPI={'GooglePlacesSearch'}
@@ -381,7 +494,7 @@ export default class Home extends React.Component {
             <View style={{ paddingLeft: 15, paddingRight: 15 }} >
               <SearchAutoComplete 
                 search={false}
-                placeholder='Nissan Maxima' 
+                placeholder='Choose Vehicle' 
                 secondIcon={icDownArrow} 
                 secondAlternateIcon={icUpArrow} 
                 data={this.state.vehicles}
@@ -537,7 +650,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: width,
-    height: windowHeight/1.5,
+    height: windowHeight/ (windowHeight > maxHeightChk ? 1.5 : 1.3),
     padding: 25
   },
   thankYouText:{

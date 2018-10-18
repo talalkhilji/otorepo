@@ -27,7 +27,7 @@ const VehicleComponent = ({
           <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 5, paddingBottom: 5 }} >
             <View style={styles.colorDot} />
             <Text style={[styles.companyNameText, { marginLeft: 5 }]}>
-              {companyName}
+              {carColor}
             </Text>
           </View>
         </View>

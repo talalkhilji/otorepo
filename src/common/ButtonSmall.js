@@ -6,9 +6,10 @@ const ButtonSmall = ({
     label,
     onPress,
     imgSource,
+    customStyles
   }) => (
     <TouchableOpacity onPress={onPress}>
-      <View style={[styles.gradientContainer]}>
+      <View style={[styles.gradientContainer, customStyles]}>
         <LinearGradient
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}

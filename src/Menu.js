@@ -88,6 +88,7 @@ export default function Menu({ onItemSelected, userName, languageValue, onToggle
               </View>
             </View>
           </TouchableOpacity>
+          {/*
           <TouchableOpacity onPress={() => onItemSelected('Payment Cards')}>
             <View style={navigationItemContainer}>
               <View style={menuImageContainer}>
@@ -98,6 +99,7 @@ export default function Menu({ onItemSelected, userName, languageValue, onToggle
               </View>
             </View>
           </TouchableOpacity>
+         */}
           <LinearGradient
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}

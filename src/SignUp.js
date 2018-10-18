@@ -135,7 +135,7 @@ render() {
               <Input
                 placeholder={strings.firstName}
                 onChangeText={firstName => this.setState({ firstName })}
-                value={this.props.navigation.state.params.socialName}
+                value={this.props.navigation.state.params.socialName ? this.props.navigation.state.params.socialName : this.state.firstName }
               />
               <Input
                 placeholder={strings.lastName}
@@ -155,7 +155,7 @@ render() {
               <Input
                 placeholder={strings.email}
                 onChangeText={email => this.setState({ email })}
-                value={this.props.navigation.state.params.socialEmail}
+                value={this.props.navigation.state.params.socialEmail ? this.props.navigation.state.params.socialEmail : this.state.email}
               />
             </AlbumDetailSection>
             <RNPickerSelect

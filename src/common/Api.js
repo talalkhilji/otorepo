@@ -15,7 +15,9 @@ const Get = (props) => {
 */
 
 const Post = async (props) => {
-  return axios.post(props.url, props.data);
+  return axios.post(props.url, props.data).catch(function (error) {
+    return error.response;
+  });
 };
 
 
@@ -53,6 +55,11 @@ const getCities = async () => {
 
 const getServices = async () => {
   let response = await Get({url: 'services'}); 
+  return sendResponse(response);
+}
+
+const getVehicleTypes = async () => {
+  let response = await Get({url: 'vehicle_types'}); 
   return sendResponse(response);
 }
 
@@ -109,6 +116,36 @@ const addLocation = async (data) => {
   return response;
 }
 
+
+const cancelOrder = async (order_id) => {
+
+  let userData =  await AsyncStorage.getItem('userData');
+  let userId = JSON.parse(userData).id;
+
+  let data = {
+    "order_id": order_id,
+    "customer_id": userId
+  }
+
+  let response = await Post({url: `del_order/`, data: data}); 
+  return response;
+}
+
+
+const deleteVehicle = async (vehicle_id) => {
+
+  let userData =  await AsyncStorage.getItem('userData');
+  let userId = JSON.parse(userData).id;
+
+  let data = {
+    "vehicle_id": vehicle_id,
+    "customer_id": userId
+  }
+  
+  let response = await Post({url: `del_vehicle`, data: data}); 
+  return response;
+}
+
 export { Get, 
          Post, 
          getCustomerVehicles, 
@@ -120,5 +157,8 @@ export { Get,
          getVehicleDetails, 
          placeOrder, 
          getCustomerOrders,
-         addLocation
+         addLocation,
+         cancelOrder,
+         getVehicleTypes,
+         deleteVehicle
        };

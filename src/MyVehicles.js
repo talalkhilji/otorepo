@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { StackNavigator } from 'react-navigation';
+import { View, StyleSheet, ScrollView, Text } from 'react-native';
 import DialogBox from 'react-native-dialogbox';
-import { CustomStatusBar, VehicleComponent, getCustomerVehicles } from './common'
+import Toast from 'react-native-simple-toast';
+import { CustomStatusBar, VehicleComponent, getCustomerVehicles, SimpleLoader, deleteVehicle } from './common'
 import AddNewVehicles from './AddNewVehicles';
 
 
@@ -13,14 +13,17 @@ export default class MyVehicles extends React.Component {
     super(props);
 
     this.state = {
-      vehicles: []
+      vehicles: [],
+      loading: true
     };
 
   }
 
  async componentDidMount(){
     let vehicles = await getCustomerVehicles(); 
-    this.setState({vehicles: vehicles});
+    this.setState({vehicles, loading: false});
+
+    console.log(vehicles);
 }
 openAddNewVehicleScreen() {
     const { navigate } = this.props.navigation;
@@ -28,19 +31,19 @@ openAddNewVehicleScreen() {
       // setMenuInvisible: this.props.setMenuInvisible()
     });
   }
-  openDialog(){
+  openDialog(vehicle_index, vehicle_id){
     // alert
     this.dialogbox.confirm({
-      title: 'title',
-      // content: ['come on!', 'go!'],
+      //title: 'title',
+      content: "Are you sure to delete this vehicle?",
       ok: {
         text: 'OK',
         style: {
           color: '#40B4D0'
         },
-        // callback: () => {
-        //   this.dialogbox.alert('Good!');
-        // },
+        callback: () => {
+           this.deleteVehicle(vehicle_index, vehicle_id);
+        },
       },
       cancel: {
         text: 'CANCEL',
@@ -53,30 +56,61 @@ openAddNewVehicleScreen() {
       },
     });
   }
+
+
+editVehicle(vehicle_id){
+  this.props.navigation.navigate({key: 'AddNewVehicles', routeName: 'AddNewVehicles', params: {vehicle_id: vehicle_id}});
+} 
+
+
+async deleteVehicle(vehicle_index, vehicle_id){
+
+  let response = await deleteVehicle(vehicle_id);
+
+  if(response.status === 406){
+    Toast.show(response.data.message);
+  }
+  else{
+    let vehicles = this.state.vehicles;
+    vehicles.splice(vehicle_index, 1);
+    this.setState({vehicles});
+  }
+}
+
 render() {
   const { mainContainer } = styles;
     return (
         <View style={mainContainer}>
           <CustomStatusBar
-            title='MY VEHICLE'
+            title='MY VEHICLES'
             secondIcon={icAddNewVehicle}
             onPressSecondIcon={(this.openAddNewVehicleScreen.bind(this))}
           />
-          <ScrollView>
-            <View style={{ padding: 15, paddingTop: 25 }}>
-            {this.state.vehicles.map(vehicle =>
-                <VehicleComponent
-                  companyName={vehicle.make_name}
-                  carName={vehicle.model_name}
-                  manufactureYear={vehicle.model_years}
-                  numberPlate={`${vehicle.plate_place_code} ${vehicle.plate_city} ${vehicle.plate_number}`}
-                  carColor={vehicle.color_name}
-                  onDeletePress={() => {this.openDialog()}}
-                  onEditPress={() => {this.openDialog()}}
-                />
-            )}
-            </View>
-          </ScrollView>
+          {this.state.loading ? 
+            <SimpleLoader />
+            :
+              <ScrollView>
+                <View style={{ padding: 15, paddingTop: 25 }}>
+                {this.state.vehicles.map((vehicle, index) =>
+                    <VehicleComponent
+                      key={vehicle.id}
+                      companyName={vehicle.make_name}
+                      carName={vehicle.model_name}
+                      manufactureYear={vehicle.years}
+                      numberPlate={`${vehicle.plate_place_code} ${vehicle.plate_city} ${vehicle.plate_number}`}
+                      carColor={vehicle.color_name}
+                      onDeletePress={() => {this.openDialog(index, vehicle.id)}}
+                      onEditPress={() => {this.editVehicle(vehicle.id)}}
+                    />
+                )}
+                </View>
+                {this.state.vehicles.length === 0 && 
+                    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                        <Text style={styles.text}>No Vehicle Found</Text>
+                    </View>
+                }
+              </ScrollView>
+          }
           <DialogBox ref={dialogbox => { this.dialogbox = dialogbox }}/>
         </View>
 
@@ -88,4 +122,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF'
   },
+  text: {
+    fontFamily: "Montserrat",
+    fontSize: 14,
+    fontWeight: "normal",
+    fontStyle: "normal",
+    lineHeight: 15,
+    letterSpacing: 0,
+    textAlign: "left",
+    color: "#5f7290"
+  }
 });

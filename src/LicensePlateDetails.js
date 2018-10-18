@@ -2,7 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, AsyncStorage } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
 import Toast from 'react-native-simple-toast';
-import { AlbumDetail, AlbumDetailSection, Input, CustomStatusBar, Button, WhiteBg, Post, AutoComplete, Get, getCities } from './common';
+import RNPickerSelect from 'react-native-picker-select';
+import { AlbumDetail, AlbumDetailSection, Input, CustomStatusBar, Button, WhiteBg, Post, AutoComplete, Get, getCities, getVehicleDetails } from './common';
 
 const icClose = require('./Image/ic_close.png');
 const icDownArrow = require('./Image/ic_down_arrow.png');
@@ -17,7 +18,7 @@ export default class LicensePlateDetails extends React.Component {
 
     let vehicleBesicDetails = 'vehicleBesicDetails' in props.navigation.state.params ? 
                                                          props.navigation.state.params.vehicleBesicDetails :
-                                                         {};
+                                                         {};                                   
                                                          
     this.state = {
       cities: [],
@@ -30,7 +31,29 @@ export default class LicensePlateDetails extends React.Component {
 
 
   async componentDidMount(){
-    let cities = await getCities();
+
+    if(this.state.vehicleBesicDetails.vehicle_id){
+      let vehicleDetails = await getVehicleDetails(this.state.vehicleBesicDetails.vehicle_id);
+
+      console.log('vehicleDetails: ', vehicleDetails);
+
+      this.setState({
+        city_name: vehicleDetails[0].plate_city,
+        city_id: vehicleDetails[0].plate_city_id,
+        plate_code: vehicleDetails[0].plate_place_code,
+        plate_no: vehicleDetails[0].plate_number
+
+      });
+    }
+
+    let resCities = await getCities();
+
+    let cities = [];
+
+    await resCities.map(city => 
+      cities.push({'label': city.name, 'value': city.id})
+    );
+
     this.setState({cities});
   }
 
@@ -54,7 +77,7 @@ export default class LicensePlateDetails extends React.Component {
                "make_id": this.state.vehicleBesicDetails.make_id, 
                "model_id": this.state.vehicleBesicDetails.model_id, 
                "years": this.state.vehicleBesicDetails.year, 
-               "vehicle_type_id":"1", 
+               "vehicle_type_id":this.state.vehicleBesicDetails.type_id, 
                "customer_id": userId, 
                "city_id": this.state.city_id, 
                "plate_number": this.state.plate_no, 
@@ -64,9 +87,15 @@ export default class LicensePlateDetails extends React.Component {
               };
 
 
+    let url = 'vehicle';
+
+    if(this.state.vehicleBesicDetails.vehicle_id){
+      url = `update_${url}`;
+      data.vehicle_id = this.state.vehicleBesicDetails.vehicle_id;
+    }       
               //console.log(data); return;
 
-    response = await Post({url: 'vehicle', data:data});
+    response = await Post({url: url, data:data});
 
     //console.log(response);
     //Toast.show('Please provide the necessary information to proceed');
@@ -96,25 +125,37 @@ export default class LicensePlateDetails extends React.Component {
           <View style={{ flex: 1, justifyContent: 'space-between' }}>
             <View>
               <AlbumDetail>
-                <AlbumDetailSection>
-                  <AutoComplete
-                    imageSource={icDownArrow}
-                    placeholder={strings.selectCity}
-                    onSelection={city_id => this.setState({ city_id })}
-                    data={this.state.cities}
-                    dataProps={{id: 'data.id'}}
-                  />
-                </AlbumDetailSection>
+                <RNPickerSelect
+                  placeholder={{
+                      label: strings.selectCity,
+                      value: null,
+                  }}
+                  placeholderTextColor='#666666'
+                  items={this.state.cities}
+                  onValueChange={(city_id, index) => {
+                      this.setState({ city_name: this.state.cities[index-1] ? this.state.cities[index-1].label : strings.selectCity, city_id});
+                  }}
+                >
+                  <AlbumDetailSection>
+                    <Input
+                      imageSource={icDownArrow}
+                      placeholder={strings.selectCity}
+                      value={this.state.city_name}
+                    />
+                  </AlbumDetailSection>
+                </RNPickerSelect>
                 <AlbumDetailSection>
                   <Input
                     placeholder={strings.enterPlateNo}
                     onChangeText={plate_no => this.setState({ plate_no })}
+                    value={this.state.plate_no}
                   />
                 </AlbumDetailSection>
                 <AlbumDetailSection>
                   <Input
                     placeholder={strings.enterPlateCode}
                     onChangeText={plate_code => this.setState({ plate_code })}
+                    value={this.state.plate_code}
                   />
                 </AlbumDetailSection>
               </AlbumDetail>
@@ -128,13 +169,13 @@ export default class LicensePlateDetails extends React.Component {
                       <View style={[styles.RectangleShapeView, { height: 5, width: 15 }]} />
                     </View>
                     <View style={{ paddingLeft: 10, paddingRight: 10, flexDirection: 'row', alignItems: 'center' }}>
-                      <Input placeholder='X' />
+                      <View style={styles.plateTextContainer}>
+                        <Text style={styles.plateText}>{this.state.plate_code || 'X'}</Text>
+                      </View>  
                         <Text style={{ fontSize: 24, fontFamily: 'Montserrat-Bold', color: '#42B6D2', justifyContent: 'flex-end', }}>DUBAI</Text>
-                      <Input placeholder='X' />
-                      <Input placeholder='X' />
-                      <Input placeholder='X' />
-                      <Input placeholder='X' />
-                      <Input placeholder='X' />
+                      <View style={styles.plateTextContainer}>
+                        <Text style={styles.plateText}>{this.state.plate_no || 'X'}</Text>
+                      </View>
                     </View>
                   </View>
                 </WhiteBg>
@@ -162,4 +203,19 @@ export default class LicensePlateDetails extends React.Component {
       backgroundColor: '#E2E8EF',
       justifyContent: 'center',
     },
+    plateTextContainer: {
+      flex: 1,
+      borderBottomWidth: 1,
+      borderColor: '#77D5F2',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingTop: 10,
+      paddingBottom: 10
+    },
+    plateText: {
+      color: '#666666',
+      fontSize: 11,
+      fontFamily: 'Montserrat-Bold',
+      textAlign: 'center'
+    }
   });

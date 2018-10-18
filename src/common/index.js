@@ -27,6 +27,7 @@ export * from './BlueRoundBg';
 export * from './ServiceType';
 export * from './CreditCardList';
 export * from './Loader';
+export * from './SimpleLoader';
 export * from './Api';
 export * from './Constants';
 export {default as AutoComplete} from './AutoComplete';

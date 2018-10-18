@@ -4,9 +4,10 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 const WhiteButtonSmall = ({
     label,
     onPress,
+    customStyles
   }) => (
     <TouchableOpacity onPress={onPress}>
-    <View style={[styles.transperantContainer]}>
+    <View style={[styles.transperantContainer, customStyles]}>
         <Text style={styles.transperantButtonText} >{label}</Text>
     </View>
     </TouchableOpacity>
