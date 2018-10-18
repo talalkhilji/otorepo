@@ -34,24 +34,6 @@ export default class AddNewVehicles extends React.Component {
 
   async componentDidMount(){
 
-    if(this.state.vehicle_id){
-      let vehicleDetails = await getVehicleDetails(this.state.vehicle_id);
-
-      this.setState({
-        make_name: vehicleDetails[0].make_name,
-        model_name: `${vehicleDetails[0].model_name}`,
-        year: vehicleDetails[0].model_years,
-        color_name: vehicleDetails[0].color_name,
-        make_id: vehicleDetails[0].make_id,
-        model_id: vehicleDetails[0].model_id,
-        color_id: vehicleDetails[0].color_id,
-        type_id: vehicleDetails[0].vehicle_type_id,
-        type_name: vehicleDetails[0].vehicle_type
-      }, () => {
-        this.getMakeModels();
-      });
-    }
-
     let resMakes = await getMakes();
     let resColors = await getColors();
     let resTypes = await getVehicleTypes();
@@ -75,6 +57,27 @@ export default class AddNewVehicles extends React.Component {
     );
 
     this.setState({makes, colors, types});
+
+
+    if(this.state.vehicle_id){
+      let vehicleDetails = await getVehicleDetails(this.state.vehicle_id);
+
+      this.setState({
+        make_name: vehicleDetails[0].make_name,
+        model_name: `${vehicleDetails[0].model_name}`,
+        year: vehicleDetails[0].years,
+        color_name: vehicleDetails[0].color_name,
+        make_id: vehicleDetails[0].make_id,
+        model_id: vehicleDetails[0].model_id,
+        color_id: vehicleDetails[0].color_id,
+        type_id: vehicleDetails[0].vehicle_type_id,
+        type_name: vehicleDetails[0].vehicle_type
+      }, () => {
+        this.getMakeModels();
+      });
+    }
+
+
   }
 
 

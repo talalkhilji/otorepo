@@ -369,7 +369,7 @@ console.info(doc)*/
                     <View style={styles.bottomOval} />
                   </View>
                   <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center', paddingLeft: 0, paddingRight: 8 }}>
-                    <Text style={styles.packagesNumberContainer}><Text style={{fontSize: 20}}>{this.state.locationDistanceTime || '♾️'}</Text> {this.state.locationDistanceText}</Text>
+                    <Text style={styles.packagesNumberContainer}><Text style={{fontSize: 20}}>{this.state.locationDistanceTime || '♾️'}</Text> {this.state.locationDistanceText || 'mins'}</Text>
                   </View>
                 </View>  
                 </OrangeBg>

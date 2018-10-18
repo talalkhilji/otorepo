@@ -32,20 +32,6 @@ export default class LicensePlateDetails extends React.Component {
 
   async componentDidMount(){
 
-    if(this.state.vehicleBesicDetails.vehicle_id){
-      let vehicleDetails = await getVehicleDetails(this.state.vehicleBesicDetails.vehicle_id);
-
-      console.log('vehicleDetails: ', vehicleDetails);
-
-      this.setState({
-        city_name: vehicleDetails[0].plate_city,
-        city_id: vehicleDetails[0].plate_city_id,
-        plate_code: vehicleDetails[0].plate_place_code,
-        plate_no: vehicleDetails[0].plate_number
-
-      });
-    }
-
     let resCities = await getCities();
 
     let cities = [];
@@ -55,6 +41,22 @@ export default class LicensePlateDetails extends React.Component {
     );
 
     this.setState({cities});
+
+
+    if(this.state.vehicleBesicDetails.vehicle_id){
+      let vehicleDetails = await getVehicleDetails(this.state.vehicleBesicDetails.vehicle_id);
+
+      //console.log('vehicleDetails: ', vehicleDetails);
+
+      this.setState({
+        city_name: vehicleDetails[0].plate_city,
+        city_id: vehicleDetails[0].plate_city_id,
+        plate_code: vehicleDetails[0].plate_place_code,
+        plate_no: vehicleDetails[0].plate_number
+
+      });
+    }
+    
   }
 
   openAddNewVehiclesScreen() {

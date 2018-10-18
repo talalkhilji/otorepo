@@ -87,7 +87,7 @@ render() {
               {this.state.customerOrders.map((order, index) => 
                 <View key={order.id}>
                    <MyOrdersCard
-                    carName={`${order.make_name} ${order.model_name} ${order.model_years}`.toUpperCase()}
+                    carName={`${order.make_name} ${order.model_name}`.toUpperCase()}
                     washType={order.service_title}
                     paymentType={`${order.payment_mode === 'Cash' ? 'Cash on Delivery' : 'Credit Card'}`}
                     orderNo={`Order No.: ${order.id}`}
