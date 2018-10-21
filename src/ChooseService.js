@@ -8,10 +8,12 @@ import { StyleSheet,
   Platform,
   StatusBar } from 'react-native';
 import Panel from './Panel/Panel';
-import { ServiceType, Button, CustomItemStatusBar, Get, getServices, getVehicleDetails } from './common';
+import { ServiceType, Button, CustomItemStatusBar, Get, getServices, getVehicleDetails, SimpleLoader } from './common';
 import DialogBox from 'react-native-dialogbox';
 import moment from 'moment';
+import GSideMenu from './GSideMenu';
 
+const icBackArrow = require('./Image/ic_back.png');
 const icRefresh = require('./Image/ic_refresh.png');
 const icCorrect = require('./Image/ic_correct_white.png');
 const icClose = require('./Image/ic_close.png');
@@ -37,6 +39,7 @@ export default class ChooseService extends React.Component {
 
 
     this.state = {
+      loading: true,
       isActive: false,
       userDetails: userDetails,
       vehicleDetails: [],
@@ -98,7 +101,7 @@ export default class ChooseService extends React.Component {
     let vehicleDetails = await getVehicleDetails(this.state.userDetails.vehicle_id);
     let services = await getServices();
 
-    this.setState({Data: services, vehicleDetails});
+    this.setState({Data: services, vehicleDetails, loading: false});
   }
 
   updateMenuState(typeId, serviceTypeId, status) {
@@ -182,18 +185,23 @@ export default class ChooseService extends React.Component {
   render() {
     const { mainContainer, listContainer, listItem, viewStyle, container, statusTextContainer, roundTextContainer, selectedBgContainer, imageContainer } = styles;
     return (
-      <View style={mainContainer}>
-        <View>
-          <CustomItemStatusBar 
-          secondIcon={icClose}
-          onPressSecondIcon={() => this.props.navigation.goBack()}
-          isService />
+      <GSideMenu
+        navigation={this.props.navigation}
+        title="CHOOSE SERVICE"
+        firstIcon={icBackArrow}
+        onPressFirstIcon={() => this.props.navigation.goBack()}
+        isService
+      >
+        <View style={mainContainer}>
+        {this.state.loading ? 
+            <SimpleLoader />
+            :
+            <ScrollView style={listContainer}>
+              {this.renderWashData()}
+            </ScrollView>
+        }
         </View>
-        <ScrollView style={listContainer}>
-          {this.renderWashData()}
-        </ScrollView>
-      </View>
-
+      </GSideMenu>
     );
   }
 }

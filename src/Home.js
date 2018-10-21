@@ -1,18 +1,16 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, Dimensions, Platform, StatusBar, AsyncStorage, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
-import { CustomItemStatusBar, Search, FeedBack, OrderDone, Button, ButtonSmall, BlueRoundBg, Get, getCustomerVehicles, SearchAutoComplete, windowHeight, maxHeightChk, OrangeBg, addLocation, Post } from './common';
+import { CustomItemStatusBar, Search, FeedBack, OrderDone, Button, ButtonSmall, BlueRoundBg, Get, getCustomerVehicles, SearchAutoComplete, windowHeight, maxHeightChk, OrangeBg, addLocation, Post, getCustomerLocations } from './common';
 import FlipToggle from 'react-native-flip-toggle-button';
-import SideMenu from 'react-native-side-menu';
-import Menu from './Menu';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import Dash from 'react-native-dash';
 import Toast from 'react-native-simple-toast';
 import moment from 'moment';
 import {DOMParser} from 'xmldom';
+import RNPickerSelect from 'react-native-picker-select';
 //import DeviceInfo from 'react-native-device-info';
 
-const mapTemplate = require('./Image/mapTemplate.png');
 const icDownArrow = require('./Image/ic_down_arrow.png');
 const icUpArrow = require('./Image/ic_up_arrow.png');
 const icWatch = require('./Image/ic_watch.png');
@@ -24,6 +22,8 @@ const icCorrect = require('./Image/ic_correct_white.png');
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
 const { width, height } = Dimensions.get('window');
 const strings = globleString.default.strings;
+
+import GSideMenu from './GSideMenu';
 
 const homePlace = { description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } }};
 const workPlace = { description: 'Work', geometry: { location: { lat: 48.8496818, lng: 2.2940881 } }};
@@ -52,18 +52,34 @@ export default class Home extends React.Component {
                           },
       allowMarkers: false,
       vehicles: [],
-      vehicle_id: null,   
-      location_name: null, 
+      locations: [],
+      vehicle_id: null,  
+      location_id: null, 
+      location_name: null,
+      saved_location_name: null, 
       googleApiKey: 'AIzaSyCHOJ-y4Q__IMjVQJ4ZKT4n3eO8TS7uGSk',
       newOrderDetails: newOrderDetails,
-      modal: true        
+      modal: true
     };
   }
 
 
   async componentDidMount(){
     let vehicles = await getCustomerVehicles(); 
-    this.setState({vehicles: vehicles});
+    let resLocations = await getCustomerLocations();
+
+    let locations = [];
+
+
+    await resLocations.map(location => 
+      locations.push({'label': location.title, 
+                      'value': location.id, 
+                      'latitude': location.latitude, 
+                      'longitude': location.longitude
+                    })
+    );
+
+    this.setState({vehicles, locations});
 
 
     /*let locationData = {
@@ -171,7 +187,7 @@ console.info(doc)*/
   }
   openScheduleWashScreen() {
 
-    if(!this.state.location_name){
+    if(!this.state.location_name && !this.state.saved_location_name){
       Toast.show('Please select location');
       return;
     }
@@ -187,6 +203,7 @@ console.info(doc)*/
               params: { userDetails: { 
                           currentCoordinates: this.state.currentCoordinates,
                           vehicle_id: this.state.vehicle_id,
+                          location_id: this.state.location_id,
                           location_name: this.state.location_name,
                           locationDistanceTime: this.state.locationDistanceTime,
                           locationDistanceText: this.state.locationDistanceText
@@ -196,7 +213,7 @@ console.info(doc)*/
   }
   openChooseServiceScreen() {
 
-    if(!this.state.location_name){
+    if(!this.state.location_name && !this.state.saved_location_name){
       Toast.show('Please select location');
       return;
     }
@@ -212,7 +229,9 @@ console.info(doc)*/
               params: { userDetails: { 
                           currentCoordinates: this.state.currentCoordinates,
                           vehicle_id: this.state.vehicle_id,
-                          location_name: this.state.location_name
+                          location_name: this.state.location_name,
+                          locationDistanceTime: this.state.locationDistanceTime,
+                          locationDistanceText: this.state.locationDistanceText
                         }
                       }
             });
@@ -226,6 +245,41 @@ console.info(doc)*/
     navigate('ServiceStatus');
   }
 
+  selectSavedLocation(location_id, index){
+      this.setState({
+                      location_name: this.state.locations[index-1] ? 
+                        this.state.locations[index-1].label : null,
+                      saved_location_name: this.state.locations[index-1] ? 
+                        (this.state.locations[index-1].label.length > 22 ? 
+                          `${this.state.locations[index-1].label.substr(0, 22)}...` :
+                          this.state.locations[index-1].label) :
+                        strings.savedLocation, 
+                     location_id});
+
+
+      if(this.state.locations[index-1]){
+
+        let location = this.state.locations[index-1];
+
+        this.calculateDistance(location.latitude, location.longitude);
+
+        this.setState({
+                locationServiceOn: true,
+                allowMarkers: true,
+                mapRegion: {
+                    latitude:       parseFloat(location.latitude),
+                    longitude:      parseFloat(location.longitude),
+                    latitudeDelta:  0.015,
+                    longitudeDelta: 0.0121
+                  },
+                  currentCoordinates: { latitude: parseFloat(location.latitude), longitude: parseFloat(location.longitude) }});
+      }
+      else{
+        this.setState({allowMarkers: false, saved_location_name: null});
+      }
+
+
+  }
 
   userCurrentLocation = async () => {
     navigator.geolocation.getCurrentPosition(
@@ -298,226 +352,246 @@ console.info(doc)*/
   render() {
     const { mainContainer, textContainer, buttonStyle, viewStyle, container, statusTextContainer, roundTextContainer, selectedBgContainer, imageContainer } = styles;
     return (
-      <View style={mainContainer}>
-      {this.state.newOrderDetails &&
-          <Modal
-            transparent={true}
-            animationType={'none'}
-            visible={this.state.modal}
-            onRequestClose={() => {console.log('close modal')}}>
-            <View style={styles.modalBackground}>
-              <View style={styles.activityIndicatorWrapper}>
-                  <View>
-                    <Image source={require('./Image/ic_logo_new.png')} style={{width: 110, height: 120}} />
-                  </View>
-                  <View style={{marginTop: 20}}>
-                    <Text style={styles.thankYouText}>THANK YOU</Text>
-
-                    <View style={{marginTop: 15}}>
-                      <Text style={styles.teamText}>Our team will be there at</Text>
+      <GSideMenu
+        navigation={this.props.navigation}
+        isLocation
+      >
+        <View style={mainContainer}>
+        {this.state.newOrderDetails &&
+            <Modal
+              transparent={true}
+              animationType={'none'}
+              visible={this.state.modal}
+              onRequestClose={() => {console.log('close modal')}}>
+              <View style={styles.modalBackground}>
+                <View style={styles.activityIndicatorWrapper}>
+                    <View>
+                      <Image source={require('./Image/ic_logo_new.png')} style={{width: 110, height: 120}} />
                     </View>
+                    <View style={{marginTop: 20}}>
+                      <Text style={styles.thankYouText}>THANK YOU</Text>
 
-                    <View style={{marginTop: 15}}>
-                      <Text style={styles.timeText}>{this.state.newOrderDetails.washing_time} - {moment(this.state.newOrderDetails.washing_date).format('dddd, DD MMMM, YYYY')}</Text>
-                    </View>
+                      <View style={{marginTop: 15}}>
+                        <Text style={styles.teamText}>Our team will be there at</Text>
+                      </View>
 
-                    <View style={{marginTop: 15}}>
-                      <Text style={styles.orderText}>ORDER NO.: <Text style={{fontWeight: 'bold', letterSpacing: 0.8}}>{this.state.newOrderDetails.id}</Text></Text>
-                    </View>
+                      <View style={{marginTop: 15}}>
+                        <Text style={styles.timeText}>{this.state.newOrderDetails.washing_time} - {moment(this.state.newOrderDetails.washing_date).format('dddd, DD MMMM, YYYY')}</Text>
+                      </View>
 
-                    <View style={{marginTop: 15}}>
-                      <Text style={styles.teamText}>Press the button below to track the service status.</Text>
-                    </View>
-                    <View style={{marginTop: 5}}>
-                      <Button 
-                        label={strings.servicestatus} 
-                        onPress={this.openServiceStatus.bind(this)} />
-                    </View>    
+                      <View style={{marginTop: 15}}>
+                        <Text style={styles.orderText}>ORDER NO.: <Text style={{fontWeight: 'bold', letterSpacing: 0.8}}>{this.state.newOrderDetails.id}</Text></Text>
+                      </View>
 
-                  </View>  
+                      <View style={{marginTop: 15}}>
+                        <Text style={styles.teamText}>Press the button below to track the service status.</Text>
+                      </View>
+                      <View style={{marginTop: 5}}>
+                        <Button 
+                          label={strings.servicestatus} 
+                          onPress={this.openServiceStatus.bind(this)} />
+                      </View>    
+
+                    </View>  
+                </View>
               </View>
-            </View>
-          </Modal>
-        }
-        <CustomItemStatusBar isLocation />
-        <View style={{ flex: 0, justifyContent: 'space-between', backgroundColor: '#f3f6f9', height: windowHeight }}>
-        <View style={[styles.container]}>
-          <MapView
-            provider={PROVIDER_GOOGLE}
-            style={styles.map}
-            region={this.state.mapRegion}
-            onRegionChangeComplete={() => this.marker ? this.marker.showCallout() : ''}
-          >
-          {this.state.allowMarkers &&
-            <Marker identifier='current_location' 
-                    ref={marker => (this.marker = marker)}
-                    coordinate={this.state.currentCoordinates} 
-                    image={require('./Image/ic_logo_1.png')}
-                    >
-
-               <Callout tooltip={true}>
-               <OrangeBg>
-                <View style={{ flex: 1, flexDirection: 'row'}}>
-                  <View style={{ padding: 10, flex: 8, flexDirection: 'row'}}>
-                    <View style={{ flex: 5, Direction: 'column', justifyContent: 'center', }}>
-                      <Text style={[styles.packageNameContainer, { color: '#FFFFFF' }]}>Here I am</Text>
-                    </View>
-                  </View>
-                  <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-                    <View style={styles.topOval} />
-                    <Dash dashColor='#F2B568' style={styles.dashContainer} />
-                    <View style={styles.bottomOval} />
-                  </View>
-                  <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center', paddingLeft: 0, paddingRight: 8 }}>
-                    <Text style={styles.packagesNumberContainer}><Text style={{fontSize: 20}}>{this.state.locationDistanceTime || '♾️'}</Text> {this.state.locationDistanceText || 'mins'}</Text>
-                  </View>
-                </View>  
-                </OrangeBg>
-               </Callout>
-            </Marker>
+            </Modal>
           }
-          </MapView>
-        </View>
-        {/*
-            <Search
-              firstIcon={icSearch}
-              placeholder='Search..'
-            />
-          */}
-          <View style={{flex: 0}}>
-            <GooglePlacesAutocomplete
-                    listViewDisplayed={ false }
-                    enablePoweredByContainer={false}
-                    placeholder={strings.search}
-                    minLength={3}
-                    autoFocus={false}
-                    fetchDetails={true}
-                    currentLocation={false}
-                    currentLocationLabel="➤ User Current location"
-                    onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-                    //console.log(details.geometry);
-                     this.selectLocation(details);
-                  }}
+          <View style={{ flex: 0, justifyContent: 'space-between', backgroundColor: '#f3f6f9', height: windowHeight }}>
+          <View style={[styles.container]}>
+            <MapView
+              provider={PROVIDER_GOOGLE}
+              style={styles.map}
+              region={this.state.mapRegion}
+              onRegionChangeComplete={() => this.marker ? this.marker.showCallout() : ''}
+            >
+            {this.state.allowMarkers &&
+              <Marker identifier='current_location' 
+                      ref={marker => (this.marker = marker)}
+                      coordinate={this.state.currentCoordinates} 
+                      image={require('./Image/ic_logo_1_map.png')}
+                      >
 
-                  getDefaultValue={() => {
-                      return ''; // text input default value
+                 <Callout tooltip>
+                 <OrangeBg>
+                  <View style={{ flex: 1, flexDirection: 'row'}}>
+                    <View style={{ padding: 10, flex: 8, flexDirection: 'row'}}>
+                      <View style={{ flex: 5, Direction: 'column', justifyContent: 'center', }}>
+                        <Text style={[styles.packageNameContainer, { color: '#FFFFFF' }]}>Here I am</Text>
+                      </View>
+                    </View>
+                    <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+                      <View style={styles.topOval} />
+                      <Dash dashColor='#F2B568' style={styles.dashContainer} />
+                      <View style={styles.bottomOval} />
+                    </View>
+                    <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center', paddingLeft: 0, paddingRight: 8 }}>
+                      <Text style={styles.packagesNumberContainer}><Text style={{fontSize: 20}}>{this.state.locationDistanceTime || '♾️'}</Text> {this.state.locationDistanceText || 'mins'}</Text>
+                    </View>
+                  </View>  
+                  </OrangeBg>
+                 </Callout>
+              </Marker>
+            }
+            </MapView>
+          </View>
+          {/*
+              <Search
+                firstIcon={icSearch}
+                placeholder='Search..'
+              />
+            */}
+            <View style={{flex: 0}}>
+              <GooglePlacesAutocomplete
+                      listViewDisplayed={ false }
+                      enablePoweredByContainer={false}
+                      placeholder={strings.search}
+                      minLength={3}
+                      autoFocus={false}
+                      fetchDetails={true}
+                      currentLocation={false}
+                      currentLocationLabel="➤ User Current location"
+                      onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
+                      //console.log(details.geometry);
+                       this.selectLocation(details);
                     }}
-                    query={{
-                      //types: '(cities)',
-                      key: this.state.googleApiKey,
-                      language: 'en'
-                    }}
-                    styles={{
-                      textInputContainer: {
-                        marginLeft: 20,
-                        marginRight: 20,
-                        paddingLeft: 10,
-                        height: 45,
-                        flexDirection: 'row',
-                        borderRadius: 10,
-                        backgroundColor: '#FFFFFF',
-                        shadowColor: 'rgba(35, 50, 74, 0.12)',
-                        borderColor: '#FFFFFF',
-                        shadowOffset: {
-                          width: 0,
-                          height: 9
+
+                    getDefaultValue={() => {
+                        return ''; // text input default value
+                      }}
+                      query={{
+                        //types: '(cities)',
+                        key: this.state.googleApiKey,
+                        language: 'en'
+                      }}
+                      styles={{
+                        textInputContainer: {
+                          borderTopColor: 'transparent',
+                          borderBottomColor: 'transparent',
+                          marginLeft: 20,
+                          marginRight: 20,
+                          paddingLeft: 10,
+                          height: 45,
+                          flexDirection: 'row',
+                          borderRadius: 10,
+                          backgroundColor: '#FFFFFF',
+                          shadowColor: 'rgba(35, 50, 74, 0.12)',
+                          borderColor: '#FFFFFF',
+                          shadowOffset: {
+                            width: 0,
+                            height: 9
+                          },
+                          shadowRadius: 21,
+                          shadowOpacity: 1,
+                          margin: 5,
+                          marginTop: 15,
+                          alignItems: 'center',
+                          elevation: 2
                         },
-                        shadowRadius: 5,
-                        shadowOpacity: 1,
-                        margin: 5,
-                        alignItems: 'center',
-                        elevation: 2
-                      },
-                      textInput: {
-                        flex: 1,
-                        fontSize: 15,
-                        fontFamily: 'Lato-Regular',
-                        color: '#BEBEBE',
-                        marginTop: -1,
-                        borderWidth: 0,
-                        backgroundColor: '#FFFFFF'
-                      },
-                      predefinedPlacesDescription: {
-                        color: '#000000',
-                        fontFamily: "Lato",
-                        fontWeight: 'bold',
-                        color: '#666666',
-                        backgroundColor: '#FFFFFF'
-                      },
-                      listView: {
-                        borderTopWidth: 1,
-                        borderColor: "#d4d3d3",
-                        maxHeight: height,
-                        position: 'absolute',
-                        top: 50,
-                        backgroundColor: '#ffffff',
-                        margin: 5,
-                        marginTop: 0,
-                        borderRadius: 10,
-                        marginLeft: 20,
-                        marginRight: 20,
-                      }
+                        textInput: {
+                          flex: 1,
+                          fontSize: 15,
+                          fontFamily: 'Roboto',
+                          color: '#BEBEBE',
+                          marginTop: -1,
+                          borderWidth: 0,
+                          backgroundColor: '#FFFFFF',
+                          fontStyle: 'italic'
+                        },
+                        predefinedPlacesDescription: {
+                          color: '#000000',
+                          fontFamily: "Lato",
+                          fontWeight: 'bold',
+                          color: '#666666',
+                          backgroundColor: '#FFFFFF'
+                        },
+                        listView: {
+                          borderTopWidth: 1,
+                          borderColor: "#d4d3d3",
+                          maxHeight: height,
+                          position: 'absolute',
+                          top: 50,
+                          backgroundColor: '#ffffff',
+                          margin: 5,
+                          marginTop: 0,
+                          borderRadius: 10,
+                          marginLeft: 20,
+                          marginRight: 20,
+                        }
+                      }}
+                      //nearbyPlacesAPI={'GooglePlacesSearch'}
+                      //filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']}
+                      renderLeftButton={()  => <Image source={icSearch} style={{marginLeft: 5}} />}
+                    />
+            </View>        
+              
+            <View style={{position: 'absolute', width: width, bottom: 170, left: 0, right: 0}}>
+              <View style={{ flexDirection: 'row', paddingLeft: 15, paddingRight: 15, }}>
+                <View style={{ flex: 1 }} />
+                <View style={{ width: 57 }}>
+                  <ButtonSmall imgSource={icLocation} onPress={this.userCurrentLocation.bind(this)} />
+                </View>
+              </View>
+              <View style={{ flexDirection: 'row', paddingLeft: 15, paddingRight: 15, }} >
+                <View style={{ flex: 3 }} >
+                  <BlueRoundBg
+                    onPress={this.openAddNewVehiclesScreen.bind(this)}
+                  >
+                    <View style={buttonStyle}>
+                      <Image source={icPlus} />
+                      <Text style={textContainer}>{strings.addVehicle}</Text>
+                    </View>
+                  </BlueRoundBg>
+                </View>
+                <View style={{ flex: 4 }} >
+                  <RNPickerSelect
+                    placeholder={{
+                        label: strings.savedLocation,
+                        value: null,
                     }}
-                    //nearbyPlacesAPI={'GooglePlacesSearch'}
-                    //filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']}
-                    renderLeftButton={()  => <Image source={icSearch} style={{marginLeft: 5}} />}
-                  />
-          </View>        
-            
-          <View style={{position: 'absolute', width: width, bottom: 170, left: 0, right: 0}}>
-            <View style={{ flexDirection: 'row', paddingLeft: 15, paddingRight: 15, }}>
-              <View style={{ flex: 1 }} />
-              <View style={{ width: 57 }}>
-                <ButtonSmall imgSource={icLocation} onPress={this.userCurrentLocation.bind(this)} />
+                    placeholderTextColor='#666666'
+                    items={this.state.locations}
+                    onValueChange={(location_id, index) => {
+                        this.selectSavedLocation(location_id, index);
+                    }}
+                  >
+                    <BlueRoundBg>
+                      <View style={buttonStyle}>
+                        <Text style={textContainer}>{this.state.saved_location_name || strings.savedLocation}</Text>
+                        <Image source={icDownArrow} style={{ tintColor: '#FFFFFF' }} />
+                      </View>
+                    </BlueRoundBg>
+                  </RNPickerSelect>
+                </View>
               </View>
-            </View>
-            <View style={{ flexDirection: 'row', paddingLeft: 15, paddingRight: 15, }} >
-              <View style={{ flex: 3 }} >
-                <BlueRoundBg
-                  onPress={this.openAddNewVehiclesScreen.bind(this)}
-                >
-                  <View style={buttonStyle}>
-                    <Image source={icPlus} />
-                    <Text style={textContainer}>{strings.addVehicle}</Text>
-                  </View>
-                </BlueRoundBg>
+              <View style={{ paddingLeft: 15, paddingRight: 15 }} >
+                <SearchAutoComplete 
+                  search={false}
+                  placeholder='Choose Vehicle' 
+                  secondIcon={icDownArrow} 
+                  secondAlternateIcon={icUpArrow} 
+                  data={this.state.vehicles}
+                  dataProps={{id: 'data.id', 
+                              format: ['data.make_name', 'data.model_name', 'data.model_years'],
+                              findKeys: ['make_name', 'model_name', 'model_years']
+                            }}
+                  onSelection={vehicle_id => this.setState({vehicle_id})} />
               </View>
-              <View style={{ flex: 4 }} >
-                <BlueRoundBg>
-                  <View style={buttonStyle}>
-                    <Text style={textContainer}>{strings.savedLocation}</Text>
-                    <Image source={icDownArrow} style={{ tintColor: '#FFFFFF' }} />
-                  </View>
-                </BlueRoundBg>
-              </View>
-            </View>
-            <View style={{ paddingLeft: 15, paddingRight: 15 }} >
-              <SearchAutoComplete 
-                search={false}
-                placeholder='Choose Vehicle' 
-                secondIcon={icDownArrow} 
-                secondAlternateIcon={icUpArrow} 
-                data={this.state.vehicles}
-                dataProps={{id: 'data.id', 
-                            format: ['data.make_name', 'data.model_name', 'data.model_years'],
-                            findKeys: ['make_name', 'model_name', 'model_years']
-                          }}
-                onSelection={vehicle_id => this.setState({vehicle_id})} />
-            </View>
-            <View style={{ padding: 10, flexDirection: 'row' }}>
-              <View style={{ flex: 4 }}>
-                <Button label={strings.myPackages} onPress={this.openSubscriptionToPackagesScreen.bind(this)} />
-              </View>
-              <View style={{ flex: 3 }}>
-                <Button label={strings.washNow} onPress={this.openChooseServiceScreen.bind(this)} />
-              </View>
-              <View style={{ flex: 2 }}>
-                <Button imgSource={icWatch} onPress={this.openScheduleWashScreen.bind(this)} />
+              <View style={{ padding: 10, flexDirection: 'row' }}>
+                <View style={{ flex: 4 }}>
+                  <Button label={strings.myPackages} onPress={this.openSubscriptionToPackagesScreen.bind(this)} />
+                </View>
+                <View style={{ flex: 3 }}>
+                  <Button label={strings.washNow} onPress={this.openChooseServiceScreen.bind(this)} />
+                </View>
+                <View style={{ flex: 2 }}>
+                  <Button imgSource={icWatch} onPress={this.openScheduleWashScreen.bind(this)} />
+                </View>
               </View>
             </View>
           </View>
         </View>
-      </View>
+      </GSideMenu>  
     );
   }
 }

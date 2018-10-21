@@ -5,6 +5,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import { AlbumDetail, AlbumDetailSection, Input, CustomStatusBar, Button, Get, AutoComplete, getMakes, getMakeModels, getColors, getVehicleDetails, getVehicleTypes } from './common';
 
 const icClose = require('./Image/ic_close.png');
+const icBackArrow = require('./Image/ic_back.png');
 const icDownArrow = require('./Image/ic_down_arrow.png');
 const icUpArrow = require('./Image/ic_up_arrow.png');
 const globleString = require('./language/languageText');
@@ -124,12 +125,32 @@ export default class AddNewVehicles extends React.Component {
         <View style={mainContainer}>
           <CustomStatusBar
             title={this.state.vehicle_id ? 'UPDATE VEHICLE' : 'ADD NEW VEHICLE'}
-            onPressSecondIcon={() => this.props.navigation.goBack()}
-            secondIcon={icClose}
+            onPressFirstIcon={() => this.props.navigation.goBack()}
+            firstIcon={icBackArrow}
           />
           <View style={{ flex: 1, justifyContent: 'space-between' }}>
             <View >
               <AlbumDetail>
+                <RNPickerSelect
+                  placeholder={{
+                      label: strings.selectVehicleType,
+                      value: null,
+                  }}
+                  placeholderTextColor='#666666'
+                  items={this.state.types}
+                  onValueChange={(type_id, index) => {
+                      this.setState({ type_name: this.state.types[index-1] ? this.state.types[index-1].label : strings.selectVehicleType, type_id});
+                  }}
+                >
+                  <AlbumDetailSection>
+                    <Input
+                      imageSource={icDownArrow}
+                      placeholder={strings.selectVehicleType}
+                      value={this.state.type_name}
+                    />
+                  </AlbumDetailSection>
+                </RNPickerSelect>
+
                 <RNPickerSelect
                   placeholder={{
                       label: strings.selectManufacturer,
@@ -170,29 +191,8 @@ export default class AddNewVehicles extends React.Component {
                   </AlbumDetailSection>
                 </RNPickerSelect>
 
-                <RNPickerSelect
-                  placeholder={{
-                      label: strings.selectVehicleType,
-                      value: null,
-                  }}
-                  placeholderTextColor='#666666'
-                  items={this.state.types}
-                  onValueChange={(type_id, index) => {
-                      this.setState({ type_name: this.state.types[index-1] ? this.state.types[index-1].label : strings.selectVehicleType, type_id});
-                  }}
-                >
-                  <AlbumDetailSection>
-                    <Input
-                      imageSource={icDownArrow}
-                      placeholder={strings.selectVehicleType}
-                      value={this.state.type_name}
-                    />
-                  </AlbumDetailSection>
-                </RNPickerSelect>
-
                 <AlbumDetailSection>
                   <Input
-                    imageSource={icDownArrow}
                     placeholder={strings.manufacturerYear}
                     onChangeText={year => this.setState({ year })}
                     value={this.state.year}

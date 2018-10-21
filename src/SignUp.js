@@ -58,10 +58,10 @@ export default class SignUp extends React.Component {
           ],
   }
   componentDidMount() {
-    this.setState({ socialId: this.props.navigation.state.params.socialId });
+    /*this.setState({ socialId: this.props.navigation.state.params.socialId });
     this.setState({ socialId: this.props.navigation.state.params.socialName });
     this.setState({ socialId: this.props.navigation.state.params.socialEmail });
-    this.setState({ socialType: this.props.navigation.state.params.socialType });
+    this.setState({ socialType: this.props.navigation.state.params.socialType });*/
   }
   openConfirmCodeScreen() {
     const re = /[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}/igm;
@@ -135,7 +135,7 @@ render() {
               <Input
                 placeholder={strings.firstName}
                 onChangeText={firstName => this.setState({ firstName })}
-                value={this.props.navigation.state.params.socialName ? this.props.navigation.state.params.socialName : this.state.firstName }
+                value={this.state.firstName}
               />
               <Input
                 placeholder={strings.lastName}
@@ -155,7 +155,7 @@ render() {
               <Input
                 placeholder={strings.email}
                 onChangeText={email => this.setState({ email })}
-                value={this.props.navigation.state.params.socialEmail ? this.props.navigation.state.params.socialEmail : this.state.email}
+                value={this.state.email}
               />
             </AlbumDetailSection>
             <RNPickerSelect

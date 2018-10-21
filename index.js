@@ -12,7 +12,26 @@ import SocialMediaSignUp from './src/SocialMediaSignUp';
 import SignUp from './src/SignUp';
 import ConfirmCode from './src/ConfirmCode';
 import Basic from './src/Basic';
+import Home from './src/Home';
+import MyVehicles from './src/MyVehicles';
+import AddNewVehicles from './src/AddNewVehicles';
+import LicensePlateDetails from './src/LicensePlateDetails';
+import MyOrders from './src/MyOrders';
+import PaymentCards from './src/PaymentCards';
+import Contact from './src/Contact';
+import Packages from './src/Packages';
+import FreeWashes from './src/FreeWashes';
+import FAQs from './src/FAQs';
+import MyProfile from './src/MyProfile';
+import AddNewCard from './src/AddNewCard';
+import SubscriptionToPackages from './src/SubscriptionToPackages';
+import ServiceStatus from './src/ServiceStatus';
+import Summary from './src/Summary';
+import ScheduleWash from './src/ScheduleWash';
 import ChooseService from './src/ChooseService';
+import Confirmation from './src/Confirmation';
+import Payment from './src/Payment';
+import SignOut from './src/SignOut';
 
 console.disableYellowBox = true;
 
@@ -28,7 +47,24 @@ const AppDelegateApp = StackNavigator({
   SocialMediaSignUp: { screen: SocialMediaSignUp },
   SignUp: { screen: SignUp },
   ConfirmCode: { screen: ConfirmCode },
-  Basic: { screen: Basic }
+  Basic: { screen: Basic },
+  Home: { screen: Home },
+  MyVehicles: { screen: MyVehicles },
+  AddNewVehicles: { screen: AddNewVehicles },
+  LicensePlateDetails: { screen: LicensePlateDetails },
+  MyOrders: { screen: MyOrders },
+  Contact: { screen: Contact },
+  Packages: { screen: Packages },
+  FreeWashes: { screen: FreeWashes },
+  FAQs: { screen: FAQs },
+  MyProfile: { screen: MyProfile },
+  SubscriptionToPackages: { screen: SubscriptionToPackages },
+  ServiceStatus: { screen: ServiceStatus },
+  ScheduleWash: { screen: ScheduleWash },
+  ChooseService: { screen: ChooseService },
+  Confirmation: { screen: Confirmation },
+  Payment: { screen: Payment },
+  SignOut: { screen: SignOut }
 }, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
 
 AppRegistry.registerComponent(appName, () => AppDelegateApp);

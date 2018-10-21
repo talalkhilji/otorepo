@@ -30,6 +30,15 @@ const getCustomerVehicles = async () => {
 }
 
 
+const getCustomerLocations = async () => {
+  let userData =  await AsyncStorage.getItem('userData');
+  let userId = JSON.parse(userData).id;
+  let response = await Get({url:`customer_locations/customer_id/${userId}`});
+  return sendResponse(response);
+    
+}
+
+
 const getMakes = async () => {
   let response = await Get({url: 'makes'});
   return sendResponse(response);
@@ -149,6 +158,7 @@ const deleteVehicle = async (vehicle_id) => {
 export { Get, 
          Post, 
          getCustomerVehicles, 
+         getCustomerLocations,
          getMakes, 
          getMakeModels, 
          getColors, 

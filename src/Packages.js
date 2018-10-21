@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import { PackagesCard, CustomStatusBar, Button, } from './common'
+import { PackagesCard, CustomStatusBar, Button, } from './common';
+import GSideMenu from './GSideMenu';
 
 const icWatch = require('./Image/ic_watch.png');
 const globleString = require('./language/languageText');
@@ -18,10 +19,11 @@ export default class Packages extends React.Component {
 render() {
   const { mainContainer } = styles;
     return (
+      <GSideMenu
+        title='MY PACKAGES'
+        navigation={this.props.navigation}
+      >
       <View style={mainContainer}>
-        <CustomStatusBar
-          title='MY PACKAGES'
-        />
         <View style={{ flex: 1, justifyContent: 'space-between' }}>
         <ScrollView>
           <View style={{ flex: 1, padding: 15, paddingTop: 25 }}>
@@ -55,6 +57,7 @@ render() {
         </View>
       </View>
       </View>
+      </GSideMenu>
     );
   }
 }

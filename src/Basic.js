@@ -272,7 +272,7 @@ export default class Basic extends Component {
   }
   toggle() {
     this.setState({
-    isOpen: !this.state.isOpen,
+      isOpen: !this.state.isOpen,
     });
   }
   updateMenuState(isOpen) {

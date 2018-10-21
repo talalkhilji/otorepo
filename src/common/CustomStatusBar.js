@@ -58,7 +58,7 @@ const styles = {
     textAlign: 'center',
     fontSize: 12,
     fontFamily: 'Roboto-Medium',
-    paddingTop: windowHeight > maxHeightChk ? 7 : 0
+    paddingTop: windowHeight > maxHeightChk ? 2 : 0
   },
   iconContainer:{
     position: 'absolute',

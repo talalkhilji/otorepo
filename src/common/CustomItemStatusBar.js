@@ -1,4 +1,5 @@
 import React from 'react';
+import LinearGradient from 'react-native-linear-gradient';
 import { View, StatusBar, Platform, Dimensions, Text, Image, TouchableOpacity } from 'react-native';
 
 const icCorrect = require('../Image/ic_correct_white.png');
@@ -19,6 +20,8 @@ const CustomItemStatusBar = ({
   isConfirmation,
   isPayment,
   title,
+  firstIcon,
+  onPressFirstIcon,
   secondIcon,
   onPressSecondIcon
 }) => {
@@ -46,42 +49,56 @@ const CustomItemStatusBar = ({
       {/*
       <MyStatusBar backgroundColor="#f3f6f9" />
     */}
-      <View style={container} >
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: windowHeight > maxHeightChk ? 100 : 70}} >
+      <View>
+        <View style={[styles.container, { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: windowHeight > maxHeightChk ? 100 : 70}]} >
+          <View style={styles.firstIconContainer}> 
+           <TouchableOpacity onPress={onPressFirstIcon}>
+              {firstIcon ? <Image source={firstIcon} /> : <View style={styles.iconContainer} /> }
+            </TouchableOpacity>
+          </View>
           <Text style={{ color: '#2B95B3', alignItems: 'center', marginTop: windowHeight > maxHeightChk ? 25 : 10 }}>{title || 'OTOServ'}</Text>   
-          <View style={styles.iconContainer}> 
+          <View style={styles.secondIconContainer}> 
            <TouchableOpacity onPress={onPressSecondIcon}>
               {secondIcon ? <Image source={secondIcon} /> : <View style={styles.iconContainer} /> }
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{ justifyContent: 'space-between', height: 50 }}>
-          <View style={{ flex: 1, justifyContent: 'space-between', flexDirection: 'row' }}>
-            <Text style={[textContainer,{ color: '#2B95B3' }]}>LOCATION</Text>
-            <Text style={[textContainer,{ color: isService ? '#2B95B3' : isConfirmation || isPayment ? '#2B95B3' : '#666666'}]}>SERVICE</Text>
-            <Text style={[textContainer,{ color: isConfirmation ? '#2B95B3' : isPayment ? '#2B95B3' : '#666666'}]}>CONFIRMATION</Text>
-            <Text style={[textContainer,{ color: isPayment ? '#2B95B3' : '#666666' }]}>PAYMENT</Text>
-          </View>
-          <View style={{ flex: 1, justifyContent: 'center'}}>
-            <View style={{ height: 1, backgroundColor: '#3386a2', position: 'absolute', width,  }} />
-            <View style={{ flex: 1, justifyContent: 'space-between', flexDirection: 'row' }}>
-              <View style={{ flex: 1, alignItems: 'center' }}>
-                { isLocation ? isSelectedView('1') : isCompletedView }
-              </View>
-              <View style={{ flex: 1, alignItems: 'center' }}>
-                { isService ? isSelectedView('2') : isConfirmation || isPayment ? isCompletedView : isUpcomingView('2') }
-              </View>
-              <View style={{ flex: 1, alignItems: 'center' }}>
-                { isConfirmation ? isSelectedView('3') : isPayment ? isCompletedView : isUpcomingView('3') }
-              </View>
-              <View style={{ flex: 1, alignItems: 'center' }}>
-                { isPayment ? isSelectedView('4') : isUpcomingView('4') }
+        {(isLocation || isPayment || isService || isConfirmation) &&
+          <View style={{ justifyContent: 'space-between', height: 50 }}>
+            <View style={[styles.container, { justifyContent: 'space-between', flexDirection: 'row', height: 50 }]}>
+              <Text style={[textContainer,{ color: '#2B95B3' }]}>LOCATION</Text>
+              <Text style={[textContainer,{ color: isService ? '#2B95B3' : isConfirmation || isPayment ? '#2B95B3' : '#666666'}]}>SERVICE</Text>
+              <Text style={[textContainer,{ color: isConfirmation ? '#2B95B3' : isPayment ? '#2B95B3' : '#666666'}]}>CONFIRMATION</Text>
+              <Text style={[textContainer,{ color: isPayment ? '#2B95B3' : '#666666' }]}>PAYMENT</Text>
+            </View>
+            <View style={{ position: 'absolute', top: 20, justifyContent: 'center', width}}>
+              <View style={{ height: 2, backgroundColor: '#3386a2', position: 'absolute', width,  }} />
+              <View style={{ flex: 1, justifyContent: 'space-between', flexDirection: 'row' }}>
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                  { isLocation ? isSelectedView('1') : isCompletedView }
+                </View>
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                  { isService ? isSelectedView('2') : isConfirmation || isPayment ? isCompletedView : isUpcomingView('2') }
+                </View>
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                  { isConfirmation ? isSelectedView('3') : isPayment ? isCompletedView : isUpcomingView('3') }
+                </View>
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                  { isPayment ? isSelectedView('4') : isUpcomingView('4') }
+                </View>
               </View>
             </View>
           </View>
-        </View>
-
+        }
       </View>
+      {(!isLocation && !isPayment && !isService && !isConfirmation) &&
+        <LinearGradient
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            colors={['#c2d3ec', '#78ccdf']}
+            style={{ padding: 0.5, }}
+          />
+      }
     </View>
   );
 };
@@ -93,11 +110,10 @@ const styles = {
     height: STATUSBAR_HEIGHT,
   },
   viewStyle: {
-    backgroundColor: '#f3f6f9',
-    height: windowHeight > maxHeightChk ? 162 : 130
+    backgroundColor: 'transparent'
   },
   container: {
-    height: 120
+    backgroundColor: '#f3f6f9'
   },
   textContainer: {
     flex: 1,
@@ -122,15 +138,20 @@ const styles = {
     width: 24,
     borderRadius: 12,
     backgroundColor: '#3386a2',
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#3386a2',
     alignItems: 'center',
     justifyContent: 'center'
   },
-  iconContainer:{
+  firstIconContainer:{
+    position: 'absolute',
+    left: 10,
+    bottom: windowHeight > maxHeightChk ? 30 : 20
+  },
+  secondIconContainer:{
     position: 'absolute',
     right: 10,
-    bottom: windowHeight > maxHeightChk ? 25 : 16
+    bottom: windowHeight > maxHeightChk ? 30 : 20
   }
 };
 

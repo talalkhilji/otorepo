@@ -4,7 +4,7 @@ import Dash from 'react-native-dash';
 import { CustomStatusBar, WhiteButton, Button, ButtonSmall, } from './common'
 
 const icCorrect = require('./Image/ic_correct.png');
-const icBack = require('./Image/ic_back.png');
+const icBackArrow = require('./Image/ic_back.png');
 const icClose = require('./Image/ic_close.png');
 const globleString = require('./language/languageText');
 const strings = globleString.default.strings;
@@ -19,9 +19,9 @@ export default class ServiceStatus extends React.Component {
     return (
       <View style={mainContainer}>
         <CustomStatusBar
-          secondIcon={icClose}
           title='SERVICE STATUS'
-          onPressSecondIcon={() => this.props.navigation.goBack()}
+          firstIcon={icBackArrow}
+          onPressFirstIcon={() => this.props.navigation.goBack()}
         />
         <View style={{ flex: 1, justifyContent: 'space-between', }}>
           <View style={{ padding: 20, paddingTop: 50 }}>

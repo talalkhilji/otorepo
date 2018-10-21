@@ -4,6 +4,7 @@ import DialogBox from 'react-native-dialogbox';
 import Toast from 'react-native-simple-toast';
 import { CustomStatusBar, VehicleComponent, getCustomerVehicles, SimpleLoader, deleteVehicle } from './common'
 import AddNewVehicles from './AddNewVehicles';
+import GSideMenu from './GSideMenu';
 
 
 const icAddNewVehicle = require('./Image/ic_add_new_vehicle.png');
@@ -80,12 +81,13 @@ async deleteVehicle(vehicle_index, vehicle_id){
 render() {
   const { mainContainer } = styles;
     return (
+      <GSideMenu
+        navigation={this.props.navigation}
+        title="MY VEHICLES"
+        secondIcon={icAddNewVehicle}
+        onPressSecondIcon={this.openAddNewVehicleScreen.bind(this)}
+      >
         <View style={mainContainer}>
-          <CustomStatusBar
-            title='MY VEHICLES'
-            secondIcon={icAddNewVehicle}
-            onPressSecondIcon={(this.openAddNewVehicleScreen.bind(this))}
-          />
           {this.state.loading ? 
             <SimpleLoader />
             :
@@ -113,7 +115,7 @@ render() {
           }
           <DialogBox ref={dialogbox => { this.dialogbox = dialogbox }}/>
         </View>
-
+        </GSideMenu>
     );
   }
 }

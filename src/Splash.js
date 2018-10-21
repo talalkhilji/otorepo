@@ -31,7 +31,7 @@ export default class Splash extends React.Component {
       if (staySignedIn === 'false' || staySignedIn === '' || staySignedIn === null) {
           navigate('Login');
       } else {
-          navigate('Basic')
+          navigate('Home')
       }
     });
   }

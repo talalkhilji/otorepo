@@ -4,8 +4,10 @@ import LinearGradient from 'react-native-linear-gradient';
 import Toast from 'react-native-simple-toast';
 import moment from 'moment';
 import { WhiteBg, CustomItemStatusBar, AlbumDetail, AlbumDetailSection, Input, placeOrder, Loader, addLocation} from './common';
+import GSideMenu from './GSideMenu';
 
 
+const icBackArrow = require('./Image/ic_back.png');
 const imgWash = require('./Image/img_wash.png');
 const icCar = require('./Image/ic_car.png');
 const icPin = require('./Image/ic_pin.png');
@@ -87,18 +89,22 @@ export default class Confirmation extends React.Component {
 
       this.setState({loading: true});
 
+      let locationResponse = [];
 
-      let locationData = {
-                            "title": this.state.userDetails.location_name,
-                            "latitude": this.state.userDetails.currentCoordinates.latitude,
-                            "longitude": this.state.userDetails.currentCoordinates.longitude
-                         };
+      if(!this.userDetails.location_id){
 
-      
-      let locationResponse = await addLocation(locationData);             
+
+          let locationData = {
+                                "title": this.state.userDetails.location_name,
+                                "latitude": this.state.userDetails.currentCoordinates.latitude,
+                                "longitude": this.state.userDetails.currentCoordinates.longitude
+                             };
+          
+          locationResponse = await addLocation(locationData);  
+      }           
 
       let data = { 
-                  "location_id": locationResponse.data.contents[0].id,
+                  "location_id": this.userDetails.location_id ? this.userDetails.location_id : locationResponse.data.contents[0].id,
                   "vehicle_id": this.state.userDetails.vehicle_id, 
                   "service_id": this.state.service.id,
                   "services": services.join(','),
@@ -140,11 +146,14 @@ export default class Confirmation extends React.Component {
     const { topContainer, mainContainer, viewContainer, textContainer, transperantContainer, buttonContainer, viewStyle, container, statusTextContainer, roundTextContainer, selectedBgContainer, imageContainer  } = styles;
 
      return (
+      <GSideMenu
+        navigation={this.props.navigation}
+        title="CONFIRMATION"
+        firstIcon={icBackArrow}
+        onPressFirstIcon={() => this.props.navigation.goBack()}
+        isConfirmation
+      >
       <View style={topContainer}>
-        <CustomItemStatusBar 
-          secondIcon={icClose}
-          onPressSecondIcon={() => this.props.navigation.goBack()}
-          isConfirmation />
         <Loader loading={this.state.loading} message='Please wait..' />
         <KeyboardAvoidingView style={{flex: 1}} behavior="padding" enabled>
         <ScrollView>
@@ -235,6 +244,7 @@ export default class Confirmation extends React.Component {
           </View>
         </View>
       </View>
+      </GSideMenu>
     );
   }
 }

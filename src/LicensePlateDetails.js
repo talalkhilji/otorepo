@@ -6,6 +6,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import { AlbumDetail, AlbumDetailSection, Input, CustomStatusBar, Button, WhiteBg, Post, AutoComplete, Get, getCities, getVehicleDetails } from './common';
 
 const icClose = require('./Image/ic_close.png');
+const icBackArrow = require('./Image/ic_back.png');
 const icDownArrow = require('./Image/ic_down_arrow.png');
 const icQuestionMark = require('./Image/ic_question.png');
 const globleString = require('./language/languageText');
@@ -121,8 +122,8 @@ export default class LicensePlateDetails extends React.Component {
         <View style={mainContainer}>
           <CustomStatusBar
             title='LICENSE PLATE DETAILS'
-            onPressSecondIcon={() => this.props.navigation.goBack()}
-            secondIcon={icClose}
+            onPressFirstIcon={() => this.props.navigation.goBack()}
+            firstIcon={icBackArrow}
           />
           <View style={{ flex: 1, justifyContent: 'space-between' }}>
             <View>
@@ -170,11 +171,11 @@ export default class LicensePlateDetails extends React.Component {
                         <View style={{ width: 10 * 20 }} />
                       <View style={[styles.RectangleShapeView, { height: 5, width: 15 }]} />
                     </View>
-                    <View style={{ paddingLeft: 10, paddingRight: 10, flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ height: 70, paddingLeft: 20, paddingRight: 10, flexDirection: 'row', alignItems: 'center' }}>
                       <View style={styles.plateTextContainer}>
                         <Text style={styles.plateText}>{this.state.plate_code || 'X'}</Text>
                       </View>  
-                        <Text style={{ fontSize: 24, fontFamily: 'Montserrat-Bold', color: '#42B6D2', justifyContent: 'flex-end', }}>DUBAI</Text>
+                        <Text style={{ fontSize: 30, fontFamily: 'Montserrat-Bold', color: '#42B6D2', justifyContent: 'flex-end', }}>DUBAI</Text>
                       <View style={styles.plateTextContainer}>
                         <Text style={styles.plateText}>{this.state.plate_no || 'X'}</Text>
                       </View>
@@ -216,7 +217,7 @@ export default class LicensePlateDetails extends React.Component {
     },
     plateText: {
       color: '#666666',
-      fontSize: 11,
+      fontSize: 18,
       fontFamily: 'Montserrat-Bold',
       textAlign: 'center'
     }

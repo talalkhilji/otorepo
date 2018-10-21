@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import moment from 'moment';
 import { CustomStatusBar, MyOrdersCard, getCustomerOrders, SimpleLoader, cancelOrder } from './common';
+import GSideMenu from './GSideMenu';
 import DialogBox from 'react-native-dialogbox';
 const icCash = require('./Image/ic_cash.png');
 const icCreditCard = require('./Image/ic_credit_card.png');
@@ -73,11 +74,11 @@ serviceStatus(){
 render() {
   const { mainContainer } = styles;
     return (
+      <GSideMenu 
+        navigation={this.props.navigation}
+        title='MY ORDERS'
+      >
       <View style={mainContainer}>
-        <CustomStatusBar
-          title='MY ORDERS'
-        />
-
         {this.state.loading ? 
             <SimpleLoader />
             :
@@ -106,6 +107,7 @@ render() {
         }
         <DialogBox ref={dialogbox => { this.dialogbox = dialogbox }}/>
       </View>
+      </GSideMenu>
     );
   }
 }

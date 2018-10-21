@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { CustomStatusBar, Button } from './common'
+import { CustomStatusBar, Button } from './common';
+import GSideMenu from './GSideMenu';
 
 const icLogo = require('./Image/ic_logo_1.png');
 const globleString = require('./language/languageText');
@@ -15,30 +16,31 @@ openAddNewCardScreen() {
 render() {
   const { mainContainer, textContainer } = styles;
     return (
-      <View style={mainContainer}>
-        <CustomStatusBar
-          title='CONTACT'
-          onPress={this.openAddNewCardScreen.bind(this)}
-        />
-        <View style={{ flex: 1 }}>
-          <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
-            <Image source={icLogo} />
-          </View>
-          <View style={{ flex: 5, justifyContent: 'space-between', padding: 20 }}>
-            <Text style={textContainer} >{strings.forAnyInquiryMessage}</Text>
-            <View>
-              <Button label='support@oto-carwash.com' />
-              <Button label='800 OTO' />
+      <GSideMenu
+        title='CONTACT'
+        navigation={this.props.navigation}
+      >
+        <View style={mainContainer}>
+          <View style={{ flex: 1 }}>
+            <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
+              <Image source={icLogo} />
             </View>
-          </View>
-          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
-            <Text style={textContainer} >{strings.tearmsCondition}</Text>
-            <Text style={textContainer} >|</Text>
-            <Text style={textContainer} >{strings.privacyPolicy}</Text>
-          </View>
+            <View style={{ flex: 5, justifyContent: 'space-between', padding: 20 }}>
+              <Text style={textContainer} >{strings.forAnyInquiryMessage}</Text>
+              <View>
+                <Button label='support@oto-carwash.com' />
+                <Button label='800 OTO' />
+              </View>
+            </View>
+            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
+              <Text style={textContainer} >{strings.tearmsCondition}</Text>
+              <Text style={textContainer} >|</Text>
+              <Text style={textContainer} >{strings.privacyPolicy}</Text>
+            </View>
 
+          </View>
         </View>
-      </View>
+      </GSideMenu>
     );
   }
 }

@@ -81,7 +81,7 @@ export default class Login extends React.Component {
               console.log(JSON.parse(result).id);
           });
           const { navigate } = this.props.navigation;
-          navigate('Basic');
+          navigate('Home');
         }
       })
       .catch(error => {
@@ -99,7 +99,7 @@ export default class Login extends React.Component {
   }
   openSocialMediaSignUpScreen() {
      const { navigate } = this.props.navigation;
-     navigate('SocialMediaSignUp');
+     navigate('SignUp');
   }
 
   pressHandler() {

@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
-import { CustomStatusBar, FAQsCard } from './common'
+import { CustomStatusBar, FAQsCard } from './common';
+import GSideMenu from './GSideMenu';
+
 import FAQPanel from './Panel/FAQPanel';
 const icLogo = require('./Image/ic_logo_1.png');
 
@@ -57,17 +59,18 @@ renderFAQData() {
 render() {
   const { mainContainer } = styles;
     return (
+      <GSideMenu
+        title='FAQs'
+        navigation={this.props.navigation}
+      >
       <View style={mainContainer}>
-        <CustomStatusBar
-          title='FAQs'
-
-        />
         <View style={{ flex: 1, marginTop: 10 }}>
           <ScrollView>
             {this.renderFAQData()}
           </ScrollView>
         </View>
       </View>
+      </GSideMenu>
     );
   }
 }

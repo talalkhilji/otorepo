@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { CustomStatusBar, Button } from './common'
+import { CustomStatusBar, Button } from './common';
+import GSideMenu from './GSideMenu';
 
 const icFreeWash = require('./Image/ic_free_wash.png');
 const globleString = require('./language/languageText');
@@ -11,10 +12,11 @@ export default class FreeWashes extends React.Component {
 render() {
   const { mainContainer } = styles;
     return (
+      <GSideMenu
+        title='FREE WASHES'
+        navigation={this.props.navigation}
+      >
       <View style={mainContainer}>
-        <CustomStatusBar
-          title='FREE WASHES'
-        />
         <View style={{ flex: 1, justifyContent: 'space-between' }}>
           <View style={{ flex: 1, justifyContent: 'center', marginLeft: 50, marginRight: 50, }}>
             <View style={{ alignItems: 'center', justifyContent: 'center' }} >
@@ -34,6 +36,7 @@ render() {
           </View>
         </View>
       </View>
+      </GSideMenu>
     );
   }
 }

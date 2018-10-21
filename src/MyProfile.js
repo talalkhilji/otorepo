@@ -1,12 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, AsyncStorage} from 'react-native';
-import { AlbumDetail, AlbumDetailSection, Input, CustomStatusBar, Button, Loader } from './common'
+import { AlbumDetail, AlbumDetailSection, Input, CustomStatusBar, Button, Loader } from './common';
+
 import axios from 'axios';
 import CheckBox from 'react-native-check-box';
 import Toast from 'react-native-simple-toast';
 import RNPickerSelect from 'react-native-picker-select';
 
 const icEditProfile = require('./Image/ic_edit_profile.png');
+const icBackArrow = require('./Image/ic_back.png');
 const icDownArrow = require('./Image/ic_down_arrow.png');
 const globleString = require('./language/languageText');
 const strings = globleString.default.strings;
@@ -126,6 +128,8 @@ console.log("touch_id",this.state.isTouchID);
         <Loader loading={this.state.loading} message='Please wait..' />
         <CustomStatusBar
           title='MY PROFILE'
+          firstIcon={icBackArrow}
+          onPressFirstIcon={() => this.props.navigation.goBack()}
           secondIcon={icEditProfile}
           onPressSecondIcon={() => this.setState({ notEditable: !this.state.notEditable})}
         />
