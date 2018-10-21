@@ -104,11 +104,7 @@ const strings = new LocalizedStrings({
     freeWashesSmall: 'Free Washes',
     faqs: 'FAQs',
     signOut: 'SIGN OUT',
-
-    //Washer 
-    jobsSmall: 'Jobs',
-    carNameCapital: 'SEDAN',
-
+ 
     // My Vehicles
     myVehicle: 'MY VEHICLE',
 
@@ -161,6 +157,17 @@ const strings = new LocalizedStrings({
 
     // FeedBack
     feedBackTitle: 'HOW WAS YOUR LAST EXPERIENCE',
+
+    //Washer app screens
+    jobsSmall: 'Washer Jobs',
+    carNameCapital: 'SEDAN',
+    carPlateTitle:'TODAY’S CAR PLATE NO.',
+    inputTitleCarPlateNo:'ENTER CAR PLATE NO.',
+    carPlateContinueBtn:'Continue',
+    jobsCarPlateSmall:'Washer Car Plate',
+    jobsFilterSmall:'Washer Jobs Filter',
+    jobsFilterTitle:'JOB FILTERS AS RECEIVED',
+    jobsFilterDoneBtn:'Done'
   },
   ar: {
     // Login

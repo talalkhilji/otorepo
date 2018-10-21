@@ -38,6 +38,11 @@ import Payment from './Payment';
 import SignOut from './SignOut';
 
 
+//Washer app screens
+import JobsCards from './washer/JobsCards';
+import CarPlateCards from './washer/CarPlateCards';
+import JobsFilterCards from './washer/JobsFilterCards';
+
 const image = require('./Image/ic_home.png');
 
 const HomeAppSample = props => (
@@ -99,6 +104,33 @@ const PaymentCardsApp = StackNavigator({
   PaymentCardsAppSample: { screen: PaymentCardsAppSample },
   AddNewCard: { screen: AddNewCard },
 }, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
+
+//Washer app screens
+const JobsCardsAppSample = props => (
+  <JobsCards navigation={props.navigation} />
+);
+const JobsCardsApp = StackNavigator({
+  JobsCardsAppSample: { screen: JobsCardsAppSample },
+  AddNewCard: { screen: AddNewCard },
+}, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
+
+const CarPlateCardsAppSample = props => (
+  <CarPlateCards navigation={props.navigation} />
+);
+const CarPlateCardsApp = StackNavigator({
+  CarPlateCardsAppSample: { screen: CarPlateCardsAppSample },
+  AddNewCard: { screen: AddNewCard },
+}, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
+
+
+const JobsFilterCardsAppSample = props => (
+  <JobsFilterCards navigation={props.navigation} />
+);
+const JobsFilterCardsApp = StackNavigator({
+  JobsFilterCardsAppSample: { screen: JobsFilterCardsAppSample },
+  AddNewCard: { screen: AddNewCard },
+}, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
+//End Washer screens
 
 const ContactAppSample = props => (
   <Contact navigation={props.navigation} />
@@ -200,6 +232,19 @@ export default class Basic extends Component {
     if (this.state.selectedItem === 'Payment Cards') {
       return (<PaymentCardsApp />);
     }
+
+    //Washer app screens
+    if (this.state.selectedItem === 'Washer Jobs Cards') {
+      return (<JobsCardsApp />);
+    }
+    if (this.state.selectedItem === 'Washer Car Plate') {
+      return (<CarPlateCardsApp />);
+    }
+    if (this.state.selectedItem === 'Washer Jobs Filter') {
+      return (<JobsFilterCardsApp />);
+    }
+    //End washer screens
+
     if (this.state.selectedItem === 'Contact') {
       return (<ContactApp />);
     }

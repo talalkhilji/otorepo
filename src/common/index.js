@@ -14,7 +14,6 @@ export * from './WhiteBg';
 export * from './OrangeBg';
 export * from './PaymentCard';
 export * from './PackagesCard';
-export * from './washer/JobsCard';
 export * from './SubscriptionToPackagesCard';
 export * from './MyOrdersCard';
 export * from './Search';
@@ -30,5 +29,11 @@ export * from './Loader';
 export * from './SimpleLoader';
 export * from './Api';
 export * from './Constants';
+
+//Washer app screens
+export * from './washer/JobsCard';
+export * from './washer/CarPlate';
+export * from './washer/JobsFilterCard';
+
 export {default as AutoComplete} from './AutoComplete';
 export {default as SearchAutoComplete} from './SearchAutoComplete';

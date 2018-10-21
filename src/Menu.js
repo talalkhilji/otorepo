@@ -100,6 +100,39 @@ export default function Menu({ onItemSelected, userName, languageValue, onToggle
             </View>
           </TouchableOpacity>
          */}
+         <TouchableOpacity onPress={() => onItemSelected('Washer Jobs Cards')}>
+            <View style={navigationItemContainer}>
+              <View style={menuImageContainer}>
+                <Image style={imageContainer} source={icPayment} />
+              </View>
+              <View style={{ justifyContent: 'center' }}>
+                <Text style={textContainer}>{strings.jobsSmall}</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => onItemSelected('Washer Car Plate')}>
+            <View style={navigationItemContainer}>
+              <View style={menuImageContainer}>
+                <Image style={imageContainer} source={icPayment} />
+              </View>
+              <View style={{ justifyContent: 'center' }}>
+                <Text style={textContainer}>{strings.jobsCarPlateSmall}</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => onItemSelected('Washer Jobs Filter')}>
+            <View style={navigationItemContainer}>
+              <View style={menuImageContainer}>
+                <Image style={imageContainer} source={icPayment} />
+              </View>
+              <View style={{ justifyContent: 'center' }}>
+                <Text style={textContainer}>{strings.jobsFilterSmall}</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
           <LinearGradient
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}

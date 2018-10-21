@@ -3,12 +3,15 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 import { WhiteBg } from '../../common';
 import Dash from 'react-native-dash';
 
-const icCar = require('../../Image/ic_car.png');
+
+const icLocation = require('../../Image/washer/washer_ic_location.png');
+const icTime = require('../../Image/washer/washer_ic_time.png');
 
 const JobsCard = ({
     cardName,
     cardType,
-    carName
+    carName,
+    icCar
   }) => (
       <WhiteBg>
         <View style={{ flex: 1, flexDirection: 'row', }} >
@@ -27,6 +30,18 @@ const JobsCard = ({
           <View style={{ flex: 1, Direction: 'column', padding: 10 }}>
             <Text style={styles.cardNameContainer}>{cardName}</Text>
             <Text style={styles.cardTypeContainer}>{cardType}</Text>
+
+            <View style={{ flexDirection: 'row',justifyContent: 'space-between',paddingTop:15 }}>
+              <View style={{ flexDirection: 'row' }}>
+                <Image style={{width:10,height:13,marginRight:4}} source={icLocation} />
+                <Text style={styles.cardTypeBottomContainer}>International City</Text>
+              </View>
+              <View style={{ flexDirection: 'row' }}>
+                <Image style={{width:13,height:13,marginRight:4}} source={icTime} /> 
+                <Text style={styles.cardTypeBottomContainer}>45 mins</Text>
+              </View>
+            </View>
+
           </View>
           
           
@@ -51,6 +66,16 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontFamily: 'Montserrat-Regular',
     color: '#A1AAB9'
+  },
+  cardTypeBottomContainer: {
+    fontFamily: "Montserrat-Regular",
+    fontSize: 11,
+    fontWeight: "normal",
+    fontStyle: "normal",
+    lineHeight: 15,
+    letterSpacing: 0,
+    textAlign: "left",
+    color: "#5f7290"
   },
   dashContainer: {
     width: 1,
