@@ -44,7 +44,7 @@ export default class LicensePlateDetails extends React.Component {
       cities.push({'label': city.name, 'value': city.id, 'img_url': city.img_url})
     );
 
-    this.setState({cities});
+    await this.setState({cities});
 
 
     if(this.state.vehicleBesicDetails.vehicle_id){
@@ -61,6 +61,12 @@ export default class LicensePlateDetails extends React.Component {
       }, () => {
         this.updatePlateCodes();
         this.updatePlateNos();
+
+        this.state.cities.map((city, index) => {
+          if(city.value === this.state.city_id){
+            this.changeCity(city.value, index+1);
+          }
+        });
       });
     }
     
@@ -212,8 +218,8 @@ export default class LicensePlateDetails extends React.Component {
                       <View style={[styles.RectangleShapeView, { height: 5, width: 15 }]} />
                     </View>
                     <View style={{ height: 70, paddingLeft: 20, paddingRight: 10, flexDirection: 'row', alignItems: 'center' }}>
-                      {this.state.plate_codes.map((code) => 
-                        <View style={styles.plateTextContainer}>
+                      {this.state.plate_codes.map((code, key) => 
+                        <View key={key} style={styles.plateTextContainer}>
                           <Text style={styles.plateText}>{code}</Text>
                         </View>
                       )}
@@ -222,8 +228,8 @@ export default class LicensePlateDetails extends React.Component {
                       */}
                       <Image source={{uri: this.state.plate_img}} style={{width: 50, height: 40}} />
                       
-                      {this.state.plate_nos.map((number) => 
-                        <View style={styles.plateTextContainer}>
+                      {this.state.plate_nos.map((number, key) => 
+                        <View key={key} style={styles.plateTextContainer}>
                           <Text style={styles.plateText}>{number}</Text>
                         </View>
                       )}
