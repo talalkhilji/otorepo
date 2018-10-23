@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, AsyncStorage } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, AsyncStorage, Linking } from 'react-native';
 import { AlbumDetail, AlbumDetailSection, Input, CustomStatusBar, Button, Loader } from './common';
 import axios from 'axios';
 import Toast from 'react-native-simple-toast';
@@ -22,6 +22,7 @@ export default class SignUp extends React.Component {
     lastName: '',
     mobile: '',
     email: '',
+    password: '',
     city: null,
     invitationCode: '',
     socialType: '',
@@ -77,7 +78,11 @@ export default class SignUp extends React.Component {
        Toast.show('Please enter email.');
     } else if (!re.test(this.state.email)) {
        Toast.show('Please enter valid email address.');
-    } else if (this.state.city === null) {
+    }else if (this.state.password.length === 0) {
+       Toast.show('Please enter password.');
+    }else if (this.state.password.length < 6) {
+       Toast.show('Entered password must be 6 chars long.');
+    }else if (this.state.city === null) {
        Toast.show('Please select city.');
     } else {
       this.setState({ loading: true });
@@ -85,6 +90,7 @@ export default class SignUp extends React.Component {
         first_name: this.state.firstName,
         last_name: this.state.lastName,
         email: this.state.email,
+        password: this.state.password,
         mobile_no: this.state.mobile,
         city: this.state.city,
         invitation_code: this.state.invitationCode,
@@ -158,6 +164,14 @@ render() {
                 value={this.state.email}
               />
             </AlbumDetailSection>
+            <AlbumDetailSection>
+              <Input
+                placeholder={strings.password}
+                onChangeText={password => this.setState({ password })}
+                value={this.state.password}
+                secureTextEntry={true}
+              />
+            </AlbumDetailSection>
             <RNPickerSelect
               placeholder={{
                   label: 'SELECT A CITY..',
@@ -187,7 +201,7 @@ render() {
               />
             </AlbumDetailSection>
             <View style={{ margin: 20 }}>
-              <Text style={privacyText}>{strings.bySigningUpMessage} <Text onPress={() => { console.log('Button CLick'); console.log('test CLick'); }} style={[privacyText, { textDecorationLine: 'underline' }]} > {strings.TermsPrivacyPolicy} </Text></Text>
+              <Text style={privacyText}>{strings.bySigningUpMessage} <Text onPress={() => {  Linking.openURL('https://www.otoserv.ae/privacy-policy/').catch(()=>alert('Something went wrong')) }} style={[privacyText, { textDecorationLine: 'underline' }]} > {strings.TermsPrivacyPolicy} </Text></Text>
             </View>
             <View>
               <Button label={strings.signUpSmall} onPress={this.openConfirmCodeScreen.bind(this)} />

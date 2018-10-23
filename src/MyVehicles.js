@@ -98,6 +98,7 @@ render() {
                       key={vehicle.id}
                       companyName={vehicle.make_name}
                       carName={vehicle.model_name}
+                      vehicleType={vehicle.vehicle_type}
                       manufactureYear={vehicle.years}
                       numberPlate={`${vehicle.plate_place_code} ${vehicle.plate_city} ${vehicle.plate_number}`}
                       carColor={vehicle.color_name}

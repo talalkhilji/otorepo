@@ -34,8 +34,8 @@ export default class ChooseService extends React.Component {
                                                    moment();  
 
     let washTime =  props.navigation.state.params ? 
-                                                  (props.navigation.state.params.washTime ? moment(props.navigation.state.params.washTime) : moment().add('45', 'minutes')) :
-                                                   moment().add('45', 'minutes');                                                                                                  
+                                                  (props.navigation.state.params.washTime ? moment(props.navigation.state.params.washTime) : moment().add('1', 'hour')) :
+                                                   moment().add('1', 'hour');                                                                                                  
 
 
     this.state = {

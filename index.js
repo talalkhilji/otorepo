@@ -31,6 +31,7 @@ import ScheduleWash from './src/ScheduleWash';
 import ChooseService from './src/ChooseService';
 import Confirmation from './src/Confirmation';
 import Payment from './src/Payment';
+import WebViewPayment from './src/WebViewPayment';
 import SignOut from './src/SignOut';
 
 console.disableYellowBox = true;
@@ -64,6 +65,7 @@ const AppDelegateApp = StackNavigator({
   ChooseService: { screen: ChooseService },
   Confirmation: { screen: Confirmation },
   Payment: { screen: Payment },
+  WebViewPayment: { screen: WebViewPayment },
   SignOut: { screen: SignOut }
 }, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
 

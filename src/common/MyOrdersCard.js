@@ -26,7 +26,7 @@ const MyOrdersCard = ({
         <View style={styles.RectangleShapeView} />
       </View>
 
-      <View style={{ flex: 9, flexDirection: 'column'}} >
+      <View style={{ flex: 8, flexDirection: 'column'}} >
         <View style={{padding: 15}}>
           <Text style={styles.monthContainer}>{carName}<Text> </Text></Text>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -55,7 +55,7 @@ const MyOrdersCard = ({
             <ButtonSmall label={strings.status} customStyles={{margin: 5, marginLeft: 10, marginBottom: 15}} onPress={onPressStatus}/>
           </View>
           <View style={{ flex: 3 }}>
-            <WhiteButtonSmall label={strings.cancelOrder} customStyles={{margin: 5, marginBottom: 15}} onPress={onPressCancel}/>
+            <WhiteButtonSmall label={strings.cancelOrder} customStyles={{margin: 5, marginLeft: 2, marginBottom: 15}} onPress={onPressCancel}/>
           </View>
         </View>
       </View>

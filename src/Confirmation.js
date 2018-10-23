@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Dimensions
 import LinearGradient from 'react-native-linear-gradient';
 import Toast from 'react-native-simple-toast';
 import moment from 'moment';
-import { WhiteBg, CustomItemStatusBar, AlbumDetail, AlbumDetailSection, Input, placeOrder, Loader, addLocation} from './common';
+import { WhiteBg, CustomItemStatusBar, AlbumDetail, AlbumDetailSection, Input, placeOrder, Loader, addLocation, Button} from './common';
 import GSideMenu from './GSideMenu';
 
 
@@ -20,6 +20,15 @@ const icClose = require('./Image/ic_close.png');
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
 const { width } = Dimensions.get('window');
 const strings = globleString.default.strings;
+
+const vehicleTypes = {
+  'Sedan' : require('./Image/ic_car.png'),
+  'SUV': require('./Image/suv.png'),
+  'Van': require('./Image/van.png'),
+  'Trailer': require('./Image/traler.png'),
+  'Bus': require('./Image/traler.png'),
+  'Bike': require('./Image/ic_car.png')
+};
 
 export default class Confirmation extends React.Component {
 
@@ -51,8 +60,8 @@ export default class Confirmation extends React.Component {
                                                    moment();  
 
     let washTime =  props.navigation.state.params ? 
-                                                  (props.navigation.state.params.washTime ? moment(props.navigation.state.params.washTime) : moment().add('45', 'minutes')) :
-                                                   moment().add('45', 'minutes');                                                                                                                                                           
+                                                  (props.navigation.state.params.washTime ? moment(props.navigation.state.params.washTime) : moment().add('1', 'hour')) :
+                                                   moment().add('1', 'hour');                                                                                                                                                           
 
     this.state = {
         userDetails: userDetails,
@@ -64,7 +73,10 @@ export default class Confirmation extends React.Component {
         specialRequest: '',
         washDate: washDate,
         washTime: washTime,
-        loading: false
+        loading: false,
+        mode: 'Cash',
+        cashModeColor: '#f2b568',
+        paymentModeColor: '#546889'
     };
   }
 
@@ -73,7 +85,25 @@ export default class Confirmation extends React.Component {
     //console.log(this.state.washDate, this.state.washTime);
   }
 
-  async openPaymentScreen(mode) {
+
+  changeMode(mode){
+      this.setState({mode});
+
+      if(mode === 'Cash'){
+        this.setState({
+          cashModeColor: '#f2b568',
+          paymentModeColor: '#546889'
+        });
+      }
+      else{
+        this.setState({
+          cashModeColor: '#546889',
+          paymentModeColor: '#f2b568'
+        });
+      }
+  }
+
+  async openPaymentScreen() {
 
     const { navigate } = this.props.navigation;
 
@@ -85,13 +115,13 @@ export default class Confirmation extends React.Component {
       return;
     }
 
-    if(mode === 'Cash'){
+    if(this.state.mode === 'Cash'){
 
       this.setState({loading: true});
 
       let locationResponse = [];
 
-      if(!this.userDetails.location_id){
+      if(!this.state.userDetails.location_id){
 
 
           let locationData = {
@@ -104,7 +134,7 @@ export default class Confirmation extends React.Component {
       }           
 
       let data = { 
-                  "location_id": this.userDetails.location_id ? this.userDetails.location_id : locationResponse.data.contents[0].id,
+                  "location_id": this.state.userDetails.location_id ? this.state.userDetails.location_id : locationResponse.data.contents[0].id,
                   "vehicle_id": this.state.userDetails.vehicle_id, 
                   "service_id": this.state.service.id,
                   "services": services.join(','),
@@ -114,7 +144,7 @@ export default class Confirmation extends React.Component {
                   "villa_apartment_no": this.state.villApartmentNo, 
                   "remarks": this.state.remarks, 
                   "special_request": this.state.specialRequest,
-                  "payment_mode": mode
+                  "payment_mode": this.state.mode
                 };
 
      let response = await placeOrder(data);
@@ -137,7 +167,23 @@ export default class Confirmation extends React.Component {
      }
     }
     else{
-      Toast.show('Credit card option is not available');
+      navigate({
+        key: 'WebViewPayment',
+        routeName: 'WebViewPayment',
+        params: {
+          userDetails: this.state.userDetails,
+          service: this.state.service,
+          services: services,
+          price: this.state.price,
+          vehicleDetails: this.state.vehicleDetails, 
+          villApartmentNo: this.state.villApartmentNo,
+          remarks: this.state.remarks,
+          specialRequest: this.state.specialRequest,
+          washDate: this.state.washDate,
+          washTime: this.state.washTime
+        }
+      });
+      //Toast.show('Credit card option is not available');
     }
 
     //navigate('Payment', { isPopToRoute: true });
@@ -167,7 +213,7 @@ export default class Confirmation extends React.Component {
                 <View style={{ backgroundColor: '#E3E8F0', height: 1, marginLeft: 10, marginRight: 10 }} />
                 <View style={viewContainer}>
                   <Text style={textContainer}>{`${this.state.vehicleDetails[0].make_name} ${this.state.vehicleDetails[0].model_name}`}</Text>
-                  <Image source={icCar} style={{ height: 11, width: 32 }} />
+                  <Image source={vehicleTypes[this.state.vehicleDetails[0].vehicle_type]} style={{ height: 11, width: 32 }} />
                 </View>
                 <View style={{ backgroundColor: '#E3E8F0', height: 1, marginLeft: 10, marginRight: 10 }} />
                 <View style={viewContainer}>
@@ -206,19 +252,19 @@ export default class Confirmation extends React.Component {
         </ScrollView>
         </KeyboardAvoidingView>
         <View style={{ padding: 15 }}>
-          <View style={{ flexDirection: 'row', marginLeft: 10, marginRight: 10 }}>
+          <View style={{ flexDirection: 'row', marginLeft: 5, marginRight: 5, marginBottom: 20}}>
             <View style={{ flex: 1, flexDirection: 'row' }} >
               <View style={[styles.gradientContainer]}>
-                <TouchableOpacity onPress={this.openPaymentScreen.bind(this, 'Cash')}>
+                <TouchableOpacity onPress={this.changeMode.bind(this, 'Cash')}>
                   <LinearGradient
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                     colors={['#FFFFFF', '#FFFFFF', '#FFFFFF']}
-                    style={[styles.linearGradient, {borderWidth:1, borderColor: '#f2b568'}]}
+                    style={[styles.linearGradient, {borderWidth:1, borderColor: this.state.cashModeColor}]}
                   >
                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                      <Image source={icCash} style={{ tintColor: '#f2b568' }} />
-                      <Text style={[buttonContainer, {color: '#f2b568'}]}>{strings.cash}</Text>
+                      <Image source={icCash} style={{ tintColor: this.state.cashModeColor }} />
+                      <Text style={[buttonContainer, {color: this.state.cashModeColor}]}>{strings.cash}</Text>
                     </View>
                   </LinearGradient>
                 </TouchableOpacity>
@@ -226,22 +272,23 @@ export default class Confirmation extends React.Component {
             </View>
             <View style={{ flex: 1, flexDirection: 'row' }} >
               <View style={[styles.gradientContainer]}>
-                <TouchableOpacity onPress={this.openPaymentScreen.bind(this, 'Credit Card')}>
+                <TouchableOpacity onPress={this.changeMode.bind(this, 'Credit Card')}>
                   <LinearGradient
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                     colors={['#FFFFFF', '#FFFFFF', '#FFFFFF']}
-                    style={[styles.linearGradient, {borderWidth:1, borderColor: '#546889'}]}
+                    style={[styles.linearGradient, {borderWidth:1, borderColor: this.state.paymentModeColor}]}
                   >
                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                      <Image source={icCreditCard} style={{ tintColor: '#546889' }} />
-                      <Text style={[buttonContainer, {color: '#546889'}]}>{strings.creditCard}</Text>
+                      <Image source={icCreditCard} style={{ tintColor: this.state.paymentModeColor }} />
+                      <Text style={[buttonContainer, {color: this.state.paymentModeColor}]}>{strings.creditCard}</Text>
                     </View>
                   </LinearGradient>
                 </TouchableOpacity>
               </View>
             </View>
           </View>
+          <Button label='Continue' onPress={() => this.openPaymentScreen()} />
         </View>
       </View>
       </GSideMenu>

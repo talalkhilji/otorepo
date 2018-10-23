@@ -171,12 +171,6 @@ export default class Menu extends React.Component {
               </View>
             </TouchableOpacity>
            */}
-            <LinearGradient
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              colors={['#c2d3ec', '#78ccdf']}
-              style={{ padding: 0.5, marginLeft: 60 }}
-            />
             <TouchableOpacity onPress={() => selectedLink('Contact')}>
               <View style={navigationItemContainer}>
                 <View style={menuImageContainer}>
@@ -207,7 +201,7 @@ export default class Menu extends React.Component {
                 </View>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => selectedLink('FAQs')}>
+            <TouchableOpacity onPress={() => Linking.openURL('https://www.otoserv.ae/faq').catch(()=>alert('Something went wrong'))}>
               <View style={navigationItemContainer}>
                 <View style={menuImageContainer}>
                   <Image style={imageContainer} source={icFAQs} />

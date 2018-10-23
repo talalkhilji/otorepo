@@ -7,9 +7,7 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import Dash from 'react-native-dash';
 import Toast from 'react-native-simple-toast';
 import moment from 'moment';
-import {DOMParser} from 'xmldom';
 import RNPickerSelect from 'react-native-picker-select';
-//import DeviceInfo from 'react-native-device-info';
 
 const icDownArrow = require('./Image/ic_down_arrow.png');
 const icUpArrow = require('./Image/ic_up_arrow.png');
@@ -80,97 +78,6 @@ export default class Home extends React.Component {
     );
 
     this.setState({vehicles, locations});
-
-
-    /*let locationData = {
-                            "title": "tesst...",
-                            "latitude": 111.222,
-                            "longitude": 222.222
-                         };
-
-      
-      let locationResponse = await addLocation(locationData);
-
-      console.log('location response', locationResponse);*/
-
-
-      /*let userData =  await AsyncStorage.getItem('userData');
-      let user = JSON.parse(userData);
-
-      let xml = `<?xml version="1.0" encoding="UTF-8"?>
-                <mobile>
-                  <store>20943</store>
-                  <key>Kjv3B-ZZ2m#R2zjK</key>
-                  <device>
-                    <type>${DeviceInfo.getManufacturer()}</type>
-                    <id>${DeviceInfo.getUniqueID()}</id>
-                    <agent>${DeviceInfo.getUserAgent()}</agent>
-                    <accept>${DeviceInfo.getUserAgent()}</accept>
-                  </device>
-                  <app>
-                    <name>OTO Serv</name>
-                    <version>1.0</version>
-                    <user>${user.id}</user>
-                    <id>${DeviceInfo.getUniqueID()}</id>
-                  </app>
-                  <tran>
-                    <test>1</test>
-                    <type>SALE</type>
-                    <class>ECOM</class>
-                    <cartid>1</cartid>
-                    <description>Test Transaction</description>
-                    <currency>AED</currency>
-                    <amount>11</amount>
-                    <ref></ref>
-                  </tran>
-                  <card>
-                    <number>4000000000000002</number>
-                    <expiry>
-                      <month>12</month>
-                      <year>2018</year>
-                    </expiry>
-                    <cvv>123</cvv>
-                  </card>
-                  <billing>
-                    <name>
-                      <title>Test</title>
-                      <first>${user.first_name}</first>
-                      <last>${user.last_name}</last>
-                    </name>
-                  <address>
-                    <line1>abc</line1>
-                    <line2>xyz</line2>
-                    <line3>123</line3>
-                    <city>${user.city}</city>
-                    <region>UAE</region>
-                    <country>UAE</country>
-                    <zip>123</zip>
-                  </address>
-                  <email>${user.email}</email>
-                  </billing>
-                </mobile>`;*/
-
-
- //console.log(xml);                 
-
-
-//let response = await Post({url: 'https://secure.innovatepayments.com/gateway/mobile.xml', data: xml});
-
-//console.log('payment response: ',response);
-
-
-/*var doc = new DOMParser().parseFromString(
-    '<xml xmlns="a" xmlns:c="./lite">\n'+
-        '\t<child>test</child>\n'+
-        '\t<child></child>\n'+
-        '\t<child/>\n'+
-    '</xml>'
-    ,'text/xml');
-doc.documentElement.setAttribute('x','y');
-doc.documentElement.setAttributeNS('./lite','c:x','y2');
-var nsAttr = doc.documentElement.getAttributeNS('./lite','x')
-console.info(nsAttr)
-console.info(doc)*/
   }
 
   openServiceStatusScreen() {

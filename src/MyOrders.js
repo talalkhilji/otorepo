@@ -94,8 +94,8 @@ render() {
                     orderNo={`Order No.: ${order.id}`}
                     dateTime={`${moment(order.washing_date).format('dddd, Do MMM, YYYY')} @ ${order.washing_time}`}
                     status='STARTING JOB'
-                    paymentMethod={`${order.payment_mode.toUpperCase() || 'CASH'}`}
-                    paymentMethodIcon={icCash}
+                    paymentMethod={`${order.payment_mode || 'Cash'}`}
+                    paymentMethodIcon={order.payment_mode === 'Cash' ? icCash : icCreditCard }
                     price={order.price}
                     onPressCancel={() => {this.openDialog(index, order.id)}}
                     onPressStatus={() => {this.serviceStatus(order.id)}}
