@@ -65,6 +65,7 @@ const AppDelegateApp = StackNavigator({
   ChooseService: { screen: ChooseService },
   Confirmation: { screen: Confirmation },
   Payment: { screen: Payment },
+  Summary: {screen: Summary},
   WebViewPayment: { screen: WebViewPayment },
   SignOut: { screen: SignOut }
 }, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
