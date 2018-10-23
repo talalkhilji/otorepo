@@ -40,6 +40,7 @@ render() {
 
           </View>
         </View>
+        
       </GSideMenu>
     );
   }

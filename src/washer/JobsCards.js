@@ -2,13 +2,17 @@ import React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { CustomStatusBar, WhiteBg, PaymentCard,JobsCard,CarPlate } from '../common';
 
+import GSideMenu from '../GSideMenu';
+
 const icAddNewVehicle = require('../Image/ic_add_new_vehicle.png');
 const icCar = require('../Image/ic_car.png');
 const icCarSuv = require('../Image/suv_2x.png');
 const icCarVan = require('../Image/van_2x.png');
 const icCarTraler = require('../Image/traler_2x.png');
 export default class JobsCards extends React.Component {
-
+constructor(props) {
+    super(props);
+}
 openAddNewCardScreen() {
     const { navigate } = this.props.navigation;
     navigate('AddNewCard');
@@ -16,13 +20,16 @@ openAddNewCardScreen() {
 render() {
   const { mainContainer } = styles;
     return (
-
+      <GSideMenu 
+        navigation={this.props.navigation}
+        title='Jobs Cards'
+      >
       <View style={mainContainer}>
-        <CustomStatusBar
+        {/*<CustomStatusBar
           title='Jobs CARDS'
           secondIcon={icAddNewVehicle}
           onPressSecondIcon={this.openAddNewCardScreen.bind(this)}
-        />
+        />*/}
         <ScrollView>
           <View style={{ padding: 15, paddingTop: 25 }}>
             <JobsCard
@@ -58,7 +65,7 @@ render() {
           </View>
         </ScrollView>
       </View>
-
+      </GSideMenu>
     );
   }
 }

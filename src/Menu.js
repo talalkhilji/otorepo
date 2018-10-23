@@ -119,8 +119,8 @@ export default class Menu extends React.Component {
                 </View>
               </View>
             </TouchableOpacity>
-          {/*
-         <TouchableOpacity onPress={() => selectedLink('WasherJobsCards')}>
+          
+         <TouchableOpacity onPress={() => selectedLink('JobsCards')}>
             <View style={navigationItemContainer}>
               <View style={menuImageContainer}>
                 <Image style={imageContainer} source={icPayment} />
@@ -152,7 +152,7 @@ export default class Menu extends React.Component {
               </View>
             </View>
           </TouchableOpacity>
-         */}
+         
           <LinearGradient
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}

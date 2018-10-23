@@ -132,12 +132,7 @@ const JobsFilterCardsApp = StackNavigator({
 }, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
 //End Washer screens
 
-const ContactAppSample = props => (
-  <Contact navigation={props.navigation} />
-);
-const ContactApp = StackNavigator({
-  ContactAppSample: { screen: ContactAppSample },
-}, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
+
 
 const SubscriptionToPackagesAppSample = props => (
   <SubscriptionToPackages navigation={props.navigation} />
@@ -158,12 +153,6 @@ const FreeWashesApp = StackNavigator({
   FreeWashesAppSample: { screen: FreeWashesAppSample },
 }, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
 
-const FAQsAppSample = props => (
-  <FAQs navigation={props.navigation} />
-);
-const FAQsApp = StackNavigator({
-  FAQsAppSample: { screen: FAQsAppSample },
-}, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
 
 const MyProfileAppSample = props => (
   <MyProfile navigation={props.navigation} />
@@ -244,18 +233,11 @@ export default class Basic extends Component {
       return (<JobsFilterCardsApp />);
     }
     //End washer screens
-
-    if (this.state.selectedItem === 'Contact') {
-      return (<ContactApp />);
-    }
     if (this.state.selectedItem === 'Packages') {
       return (<SubscriptionToPackagesApp />);
     }
     if (this.state.selectedItem === 'Free Washes') {
       return (<FreeWashesApp />);
-    }
-    if (this.state.selectedItem === 'FAQs') {
-      return (<FAQsApp />);
     }
     if (this.state.selectedItem === 'My Profile') {
       return (<MyProfileApp />);
