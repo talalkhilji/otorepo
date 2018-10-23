@@ -26,7 +26,7 @@ const MyOrdersCard = ({
         <View style={styles.RectangleShapeView} />
       </View>
 
-      <View style={{ flex: 8, flexDirection: 'column'}} >
+      <View style={{ flex: 7, flexDirection: 'column'}} >
         <View style={{padding: 15}}>
           <Text style={styles.monthContainer}>{carName}<Text> </Text></Text>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
