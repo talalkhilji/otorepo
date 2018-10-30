@@ -29,7 +29,7 @@ export default class LicensePlateDetails extends React.Component {
       plate_code: '',
       plate_nos: ['X', 'X', 'X', 'X', 'X'],
       plate_codes: ['X'],
-      plate_img: 'https://appcrm.otoserv.ae/downloads/cities_image/dubai.jpg'
+      plate_img: null
     };
   }
 
@@ -44,7 +44,7 @@ export default class LicensePlateDetails extends React.Component {
       cities.push({'label': city.name, 'value': city.id, 'img_url': city.img_url})
     );
 
-    await this.setState({cities});
+    await this.setState({cities, plate_img: cities[0].img_url});
 
 
     if(this.state.vehicleBesicDetails.vehicle_id){
@@ -136,7 +136,7 @@ export default class LicensePlateDetails extends React.Component {
                     city_id,
                     plate_img: this.state.cities[index-1] ? 
                            this.state.cities[index-1].img_url : 
-                                'https://appcrm.otoserv.ae/downloads/cities_image/dubai.jpg'
+                                this.state.cities[0].img_url
                   });              
   }
 
@@ -226,7 +226,9 @@ export default class LicensePlateDetails extends React.Component {
                       {/*
                         <Text style={{ fontSize: 30, fontFamily: 'Montserrat-Bold', color: '#42B6D2', justifyContent: 'flex-end', }}>DUBAI</Text>
                       */}
-                      <Image source={{uri: this.state.plate_img}} style={{width: 50, height: 40}} />
+                      {this.state.plate_img &&
+                        <Image source={{uri: this.state.plate_img}} style={{width: 60, height: 50}} />
+                      }
                       
                       {this.state.plate_nos.map((number, key) => 
                         <View key={key} style={styles.plateTextContainer}>

@@ -1,18 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
+import { vehicleIcon } from './Constants'; 
+
 const icCar = require('../Image/ic_car.png');
 const icEdit = require('../Image/ic_edit.png');
 const icDelete = require('../Image/ic_delete.png');
-
-const vehicleTypes = {
-  'Sedan' : require('../Image/ic_car.png'),
-  'SUV': require('../Image/suv.png'),
-  'Van': require('../Image/van.png'),
-  'Trailer': require('../Image/traler.png'),
-  'Bus': require('../Image/traler.png'),
-  'Bike': require('../Image/ic_car.png')
-};
 
 const VehicleComponent = ({
     companyName,
@@ -33,7 +26,7 @@ const VehicleComponent = ({
       </View>
       <View style={{ flex: 1, flexDirection: 'row' }} >
         <View style={{ flex: 1, Direction: 'column', justifyContent: 'flex-end', alignItems: 'flex-end', marginRight: 10 }} >
-          <Image source={vehicleTypes[vehicleType]} />
+          <Image source={vehicleIcon[vehicleType]} />
           <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 5, paddingBottom: 5 }} >
             <View style={styles.colorDot} />
             <Text style={[styles.companyNameText, { marginLeft: 5 }]}>

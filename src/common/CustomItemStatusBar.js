@@ -23,7 +23,10 @@ const CustomItemStatusBar = ({
   firstIcon,
   onPressFirstIcon,
   secondIcon,
-  onPressSecondIcon
+  onPressSecondIcon,
+  isCustomerLocation,
+  isBeforeWash,
+  isAfterWash
 }) => {
   const { viewStyle, container, textContainer, roundTextContainer, selectedBgContainer, imageContainer } = styles;
   const isUpcomingView = (text) => (
@@ -90,8 +93,32 @@ const CustomItemStatusBar = ({
             </View>
           </View>
         }
+
+        {(isCustomerLocation || isBeforeWash || isAfterWash) &&
+          <View style={{ justifyContent: 'space-between', height: 50 }}>
+            <View style={[styles.container, { justifyContent: 'space-between', flexDirection: 'row', height: 50 }]}>
+              <Text style={[textContainer,{ color: '#2B95B3', fontSize: 10 }]}>CUSTOMER LOCATION</Text>
+              <Text style={[textContainer,{ color: isBeforeWash ? '#2B95B3' : isAfterWash ? '#2B95B3' : '#666666', fontSize: 10}]}>PHOTO BEFORE WASH</Text>
+              <Text style={[textContainer,{ color: isAfterWash ? '#2B95B3' : '#666666', fontSize: 10}]}>PHOTO AFTER WASH</Text>
+            </View>
+            <View style={{ position: 'absolute', top: 20, justifyContent: 'center', width}}>
+              <View style={{ height: 2, backgroundColor: '#3386a2', position: 'absolute', width,  }} />
+              <View style={{ flex: 1, justifyContent: 'space-between', flexDirection: 'row' }}>
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                  { isCustomerLocation ? isSelectedView('1') : isCompletedView }
+                </View>
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                  { isBeforeWash ? isSelectedView('2') : isAfterWash ? isCompletedView : isUpcomingView('2') }
+                </View>
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                  { isAfterWash ? isSelectedView('3') : isUpcomingView('3') }
+                </View>
+              </View>
+            </View>
+          </View>
+        }
       </View>
-      {(!isLocation && !isPayment && !isService && !isConfirmation) &&
+      {(!isLocation && !isPayment && !isService && !isConfirmation && !isCustomerLocation && !isBeforeWash && !isAfterWash) &&
         <LinearGradient
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}

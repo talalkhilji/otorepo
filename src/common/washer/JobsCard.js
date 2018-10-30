@@ -4,20 +4,23 @@ import { WhiteBg } from '../../common';
 import Dash from 'react-native-dash';
 
 
-const icLocation = require('../../Image/washer/washer_ic_location.png');
-const icTime = require('../../Image/washer/washer_ic_time.png');
+const icLocation = require('../../Image/location.png');
+const icTime = require('../../Image/time.png');
 
 const JobsCard = ({
     cardName,
     cardType,
     carName,
-    icCar
+    icon,
+    location,
+    arrivalTime,
+    bulletCardType
   }) => (
       <WhiteBg>
         <View style={{ flex: 1, flexDirection: 'row', }} >
           <View style={{ flex:0.5,justifyContent: 'center', alignItems: 'center' }}>
            
-              <Image style={{ marginTop: 10, marginBottom: 10}} source={icCar} />
+              <Image style={{ marginTop: 10, marginBottom: 10}} source={icon} />
             
               <Text style={styles.carNameContainer}>{carName}</Text>
             
@@ -29,17 +32,32 @@ const JobsCard = ({
           </View>
           <View style={{ flex: 1, Direction: 'column', padding: 10 }}>
             <Text style={styles.cardNameContainer}>{cardName}</Text>
-            <Text style={styles.cardTypeContainer}>{cardType}</Text>
+            {bulletCardType ?
+              cardType.map((card, key) => 
+                <View key={key} style={{alignItems: 'center', flexDirection: 'row'}}>
+                  <Text style={styles.bulletPoint}>{'\u2022'}</Text>
+                  <Text style={[styles.cardTypeContainer, {color: '#5f7290'}]}>
+                    {card}
+                  </Text>  
+                </View>  
+              )
+             : 
+              <Text style={styles.cardTypeContainer}>{cardType}</Text>
+            }
 
             <View style={{ flexDirection: 'row',justifyContent: 'space-between',paddingTop:15 }}>
+            {location &&
               <View style={{ flexDirection: 'row' }}>
                 <Image style={{width:10,height:13,marginRight:4}} source={icLocation} />
-                <Text style={styles.cardTypeBottomContainer}>International City</Text>
+                <Text style={styles.cardTypeBottomContainer}>{location}</Text>
               </View>
+            }
+            {arrivalTime &&
               <View style={{ flexDirection: 'row' }}>
                 <Image style={{width:13,height:13,marginRight:4}} source={icTime} /> 
-                <Text style={styles.cardTypeBottomContainer}>45 mins</Text>
+                <Text style={styles.cardTypeBottomContainer}>{arrivalTime}</Text>
               </View>
+            }
             </View>
 
           </View>
@@ -96,5 +114,10 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 15,
         backgroundColor: '#f2f1f2'
   },
+  bulletPoint: {
+    color: "#5f7290",
+    fontSize: 15,
+    backgroundColor: 'transparent'
+  }
 });
 export { JobsCard };

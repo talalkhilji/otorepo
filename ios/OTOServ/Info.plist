@@ -79,6 +79,14 @@
 	<string>Enabling Face ID allows you quick and secure access to your account.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string/>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string/>
+    <key>NSCameraUsageDescription</key>
+    <string/>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string/>
+    <key>NSMicrophoneUsageDescription</key>
+    <string/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Lato-Bold.ttf</string>

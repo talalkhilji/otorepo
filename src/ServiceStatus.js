@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import Dash from 'react-native-dash';
-import { CustomStatusBar, WhiteButton, Button, ButtonSmall, } from './common'
+import { CustomStatusBar, WhiteButton, Button, ButtonSmall, orderStatusLabels, ORDER_STATUS_ASSIGNED, ORDER_STATUS_DONE } from './common'
 
 const icCorrect = require('./Image/ic_correct.png');
 const icBackArrow = require('./Image/ic_back.png');
@@ -10,9 +10,26 @@ const globleString = require('./language/languageText');
 const strings = globleString.default.strings;
 
 export default class ServiceStatus extends React.Component {
+
+  constructor(props){
+    super(props);
+
+    let order = this.props.navigation.state.params ? this.props.navigation.state.params.order : {};
+
+    this.state = {
+      order: order
+    }
+  }
+
   openSummaryScreen() {
     const { navigate } = this.props.navigation;
-    navigate('Summary');
+    navigate({
+      key: 'Summary',
+      routeName: 'Summary',
+      params: {
+        order: this.state.order
+      }
+    });
   }
   render() {
     const { mainContainer } = styles;
@@ -24,36 +41,31 @@ export default class ServiceStatus extends React.Component {
           onPressFirstIcon={() => this.props.navigation.goBack()}
         />
         <View style={{ flex: 1, justifyContent: 'space-between', }}>
-          <View style={{ padding: 20, paddingTop: 50 }}>
-          <View style={{ flexDirection: 'row', }} >
-            <View style={{ flex: 1, alignItems: 'center' }}>
-              <View style={styles.imageViewContainer} >
-                <Image source={icCorrect} style={{ tintColor: '#FFFFFF' }} />
+          <View style={{ padding: 40, paddingTop: 50, paddingBottom: 20 }}>
+            {orderStatusLabels.map((label, status) => 
+              <View style={{flexDirection: 'row'}} key={status}>
+                <View style={{ flex: 1}}>
+                  <View style={styles.imageViewContainer} >
+                    <Image source={icCorrect} style={{ tintColor: '#FFFFFF' }} />
+                  </View>
+                  {(status !== orderStatusLabels.length - 1) &&
+                    <Dash dashColor='#B2BAC5' style={styles.dashContainer} />
+                  }
+                </View>
+                <View style={{ flex: 5}}>
+                  <Text style={[styles.textContainer, { color: parseInt(this.state.order.status) >= status ? '#42B6D2' : '#5F7290' }]}>{label}</Text>
+                  {(parseInt(this.state.order.status) ===  ORDER_STATUS_ASSIGNED && ORDER_STATUS_ASSIGNED === status) &&
+                    <Text style={styles.extraTextContainer}>{strings.estimatedArrivalTime} Time: 45 mins</Text>
+                  }
+                </View>  
+              </View>  
+            )} 
+            {//parseInt(this.state.order.status) === ORDER_STATUS_DONE &&
+              <View style={{ marginLeft: 50, marginRight: 50, marginTop: 20 }}>
+                <ButtonSmall label={strings.pleaseInputReview} onPress={this.openSummaryScreen.bind(this)} />
               </View>
-              <Dash dashColor='#B2BAC5' style={styles.dashContainer} />
-              <View style={styles.imageViewContainer} >
-                <Image source={icCorrect} style={{ tintColor: '#FFFFFF' }} />
-              </View>
-              <Dash dashColor='#B2BAC5' style={[styles.dashContainer, { height: 72 }]} />
-              <View style={styles.imageViewContainer} >
-                <Image source={icCorrect} style={{ tintColor: '#FFFFFF' }} />
-              </View>
-              <Dash dashColor='#B2BAC5' style={styles.dashContainer} />
-              <View style={styles.imageViewContainer} >
-                <Image source={icCorrect} style={{ tintColor: '#FFFFFF' }} />
-              </View>
-            </View>
-            <View style={{ flex: 5 }}>
-              <Text style={styles.textContainer}>{strings.receivingJob}</Text>
-              <Text style={[styles.textContainer, { marginTop: 48 }]}>{strings.acceptingJob}</Text>
-              <Text style={styles.extraTextContainer}>{strings.estimatedArrivalTime} Time: 45 mins</Text>
-              <Text style={[styles.textContainer, { color: '#5F7290', marginTop: 48 }]}>{strings.startingJob}</Text>
-              <Text style={[styles.textContainer, { color: '#5F7290', marginTop: 48 }]}>{strings.finishJob}</Text>
-            </View>
-          </View>
-          <View style={{ margin: 30 }}>
-            <ButtonSmall label={strings.pleaseInputReview} onPress={this.openSummaryScreen.bind(this)} />
-          </View>
+            }  
+          </View>  
           </View>
           <View style={{ flexDirection: 'row', padding: 20, paddingTop: 0 }}>
             <View style={{ flex: 1 }}>
@@ -63,7 +75,6 @@ export default class ServiceStatus extends React.Component {
               <Button label={strings.myOrders} onPress={() => this.props.navigation.navigate('MyOrders')} />
             </View>
           </View>
-      </View>
       </View>
     );
   }
@@ -85,7 +96,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontFamily: 'Montserrat-Bold',
     color: '#42B6D2',
-    padding: 3
+    padding: 0
   },
   extraTextContainer: {
     fontSize: 13,
@@ -97,5 +108,6 @@ const styles = StyleSheet.create({
     width: 1,
     height: 50,
     flexDirection: 'column',
+    marginLeft: 8
   }
 });

@@ -1,7 +1,7 @@
 /** @format */
 import React from 'react';
 import { AppRegistry } from 'react-native';
-import { StackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
 import { name as appName } from './app.json';
 
 import AppDelegate from './src/AppDelegate';
@@ -33,6 +33,17 @@ import Confirmation from './src/Confirmation';
 import Payment from './src/Payment';
 import WebViewPayment from './src/WebViewPayment';
 import SignOut from './src/SignOut';
+import TermsAndConditions from './src/TermsAndConditions';
+import PrivacyPolicy from './src/PrivacyPolicy';
+
+
+// Washer Screens
+import JobsCards from './src/washer/JobsCards';
+import JobsDetailCards from './src/washer/JobsDetailCards';
+import StartJob from './src/washer/StartJob';
+import BeforeWash from './src/washer/BeforeWash';
+import AfterWash from './src/washer/AfterWash';
+
 
 console.disableYellowBox = true;
 
@@ -40,7 +51,7 @@ const AppDelegateAppSample = props => (
   <AppDelegate navigation={props.navigation} />
 );
 
-const AppDelegateApp = StackNavigator({
+const AppDelegateApp = createStackNavigator({
   AppDelegateAppSample: { screen: AppDelegateAppSample },
   Splash: { screen: Splash },
   Login: { screen: Login },
@@ -67,7 +78,14 @@ const AppDelegateApp = StackNavigator({
   Payment: { screen: Payment },
   Summary: {screen: Summary},
   WebViewPayment: { screen: WebViewPayment },
-  SignOut: { screen: SignOut }
+  SignOut: { screen: SignOut },
+  TermsAndConditions: { screen: TermsAndConditions },
+  PrivacyPolicy: { screen: PrivacyPolicy },
+  JobsCards: { screen: JobsCards },
+  JobsDetailCards: { screen: JobsDetailCards },
+  StartJob: { screen: StartJob},
+  BeforeWash: {screen: BeforeWash},
+  AfterWash: {screen: AfterWash}
 }, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
 
 AppRegistry.registerComponent(appName, () => AppDelegateApp);

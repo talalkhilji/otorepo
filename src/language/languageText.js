@@ -84,7 +84,8 @@ const strings = new LocalizedStrings({
     serviceStatus: 'SERVICE STATUS',
     receivingJob: 'RECEIVING JOB',
     acceptingJob: 'ACCEPTING JOB',
-    estimatedArrivalTime: 'Estimated arrival Time: ',
+    estimatedArrivalTime: 'Estimated arrival',
+    onTheWay: 'WASHER ON THE WAY', 
     startingJob: 'STARTING JOB',
     finishJob: 'FINISH JOB',
     pleaseInputReview: 'Please Input Review',
@@ -159,7 +160,7 @@ const strings = new LocalizedStrings({
     feedBackTitle: 'HOW WAS YOUR LAST EXPERIENCE',
 
     //Washer app screens
-    jobsSmall: 'Washer Jobs',
+    jobsSmall: 'Jobs',
     carNameCapital: 'SEDAN',
     carPlateTitle:'TODAY’S CAR PLATE NO.',
     inputTitleCarPlateNo:'ENTER CAR PLATE NO.',
@@ -167,7 +168,13 @@ const strings = new LocalizedStrings({
     jobsCarPlateSmall:'Washer Car Plate',
     jobsFilterSmall:'Washer Jobs Filter',
     jobsFilterTitle:'JOB FILTERS AS RECEIVED',
-    jobsFilterDoneBtn:'Done'
+    jobsFilterDoneBtn:'Done',
+    startDriving: 'Start Driving to Location',
+    licenseNo: 'LICENSE NO.',
+    color: 'COLOR',
+    additionalComments: 'ADDITIONAL COMMENTS',
+    jobs: 'JOB(S)',
+    startAJob: 'Start a Job'
   },
   ar: {
     // Login
@@ -253,6 +260,7 @@ const strings = new LocalizedStrings({
     receivingJob: 'الحصول على وظيفة',
     acceptingJob: 'قبول العمل',
     estimatedArrivalTime: 'الوقت المتوقع للوصول:',
+    onTheWay: 'WASHER ON THE WAY', 
     startingJob: 'بدء العمل',
     finishJob: 'التشطيب الوظيفي',
     pleaseInputReview: 'يرجى مراجعة المدخلات',
@@ -325,6 +333,23 @@ const strings = new LocalizedStrings({
 
     // FeedBack
     feedBackTitle: 'كيف كانت تجربتك الأخيرة',
+
+    //Washer app screens
+    jobsSmall: 'Jobs',
+    carNameCapital: 'SEDAN',
+    carPlateTitle:'TODAY’S CAR PLATE NO.',
+    inputTitleCarPlateNo:'ENTER CAR PLATE NO.',
+    carPlateContinueBtn:'Continue',
+    jobsCarPlateSmall:'Washer Car Plate',
+    jobsFilterSmall:'Washer Jobs Filter',
+    jobsFilterTitle:'JOB FILTERS AS RECEIVED',
+    jobsFilterDoneBtn:'Done',
+    startDriving: 'Start Driving to Location',
+    licenseNo: 'LICENSE NO.',
+    color: 'COLOR',
+    additionalComments: 'ADDITIONAL COMMENTS',
+    jobs: 'JOB(S)',
+    startAJob: 'Start a Job'
   }
 });
 

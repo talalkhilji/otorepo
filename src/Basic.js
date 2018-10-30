@@ -12,7 +12,7 @@ import {
 
 import { windowHeight, maxHeightChk, iphoneXHeight } from './common';
 
-import { StackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
 import SideMenu from 'react-native-side-menu';
 import Menu from './Menu';
 import Home from './Home';
@@ -48,7 +48,7 @@ const image = require('./Image/ic_home.png');
 const HomeAppSample = props => (
   <Home navigation={props.navigation} />
 );
-const HomeApp = StackNavigator({
+const HomeApp = createStackNavigator({
   Home: { screen: HomeAppSample },
   ServiceStatus: { screen: ServiceStatus },
   Summary: { screen: Summary },
@@ -66,7 +66,7 @@ const HomeApp = StackNavigator({
 const MyOrdersAppSample = props => (
   <MyOrders navigation={props.navigation} />
 );
-const MyOrdersApp = StackNavigator({
+const MyOrdersApp = createStackNavigator({
   MyOrders: { screen: MyOrders },
   Home: { screen: HomeAppSample },
   ServiceStatus: { screen: ServiceStatus },
@@ -82,7 +82,7 @@ const MyOrdersApp = StackNavigator({
 }, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
 
 
-const MyVehiclesApp = StackNavigator({
+const MyVehiclesApp = createStackNavigator({
   MyVehicles: { screen: MyVehicles },
   Home: { screen: HomeAppSample },
   ServiceStatus: { screen: ServiceStatus },
@@ -100,7 +100,7 @@ const MyVehiclesApp = StackNavigator({
 const PaymentCardsAppSample = props => (
   <PaymentCards navigation={props.navigation} />
 );
-const PaymentCardsApp = StackNavigator({
+const PaymentCardsApp = createStackNavigator({
   PaymentCardsAppSample: { screen: PaymentCardsAppSample },
   AddNewCard: { screen: AddNewCard },
 }, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
@@ -109,7 +109,7 @@ const PaymentCardsApp = StackNavigator({
 const JobsCardsAppSample = props => (
   <JobsCards navigation={props.navigation} />
 );
-const JobsCardsApp = StackNavigator({
+const JobsCardsApp = createStackNavigator({
   JobsCardsAppSample: { screen: JobsCardsAppSample },
   AddNewCard: { screen: AddNewCard },
 }, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
@@ -117,7 +117,7 @@ const JobsCardsApp = StackNavigator({
 const CarPlateCardsAppSample = props => (
   <CarPlateCards navigation={props.navigation} />
 );
-const CarPlateCardsApp = StackNavigator({
+const CarPlateCardsApp = createStackNavigator({
   CarPlateCardsAppSample: { screen: CarPlateCardsAppSample },
   AddNewCard: { screen: AddNewCard },
 }, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
@@ -126,7 +126,7 @@ const CarPlateCardsApp = StackNavigator({
 const JobsFilterCardsAppSample = props => (
   <JobsFilterCards navigation={props.navigation} />
 );
-const JobsFilterCardsApp = StackNavigator({
+const JobsFilterCardsApp = createStackNavigator({
   JobsFilterCardsAppSample: { screen: JobsFilterCardsAppSample },
   AddNewCard: { screen: AddNewCard },
 }, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
@@ -137,7 +137,7 @@ const JobsFilterCardsApp = StackNavigator({
 const SubscriptionToPackagesAppSample = props => (
   <SubscriptionToPackages navigation={props.navigation} />
 );
-const SubscriptionToPackagesApp = StackNavigator({
+const SubscriptionToPackagesApp = createStackNavigator({
   SubscriptionToPackagesAppSample: { screen: SubscriptionToPackagesAppSample },
   Packages: { screen: Packages },
   ScheduleWash: { screen: ScheduleWash },
@@ -149,7 +149,7 @@ const SubscriptionToPackagesApp = StackNavigator({
 const FreeWashesAppSample = props => (
   <FreeWashes navigation={props.navigation} />
 );
-const FreeWashesApp = StackNavigator({
+const FreeWashesApp = createStackNavigator({
   FreeWashesAppSample: { screen: FreeWashesAppSample },
 }, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
 
@@ -157,7 +157,7 @@ const FreeWashesApp = StackNavigator({
 const MyProfileAppSample = props => (
   <MyProfile navigation={props.navigation} />
 );
-const MyProfileApp = StackNavigator({
+const MyProfileApp = createStackNavigator({
   MyProfileAppSample: { screen: MyProfileAppSample },
 }, { headerMode: 'none', navigationOptions: { gesturesEnabled: false } });
 

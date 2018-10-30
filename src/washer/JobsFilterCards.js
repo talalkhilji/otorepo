@@ -19,7 +19,7 @@ render() {
 
       <View style={mainContainer}>
         <CustomStatusBar
-          title='Jobs CARDS'
+          title='Jobs Cards' 
           secondIcon={icAddNewVehicle}
           onPressSecondIcon={this.openAddNewCardScreen.bind(this)}
         />

@@ -3,7 +3,7 @@ import { View, StyleSheet, } from 'react-native';
 
 
 const WhiteBg = (props) => (
-    <View style={styles.gradientContainer} >
+    <View style={[styles.gradientContainer, props.customStyles]} >
       {props.children}
     </View>
   );

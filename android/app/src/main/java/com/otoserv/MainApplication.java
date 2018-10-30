@@ -5,6 +5,8 @@ import android.content.Intent;
 
 import com.facebook.CallbackManager;
 import com.facebook.react.ReactApplication;
+import com.imagepicker.ImagePickerPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import com.rnfingerprint.FingerprintAuthPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
@@ -37,6 +39,8 @@ public class MainApplication extends Application implements ReactApplication {
             mCallbackManager = new CallbackManager.Factory().create();
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+            new ImagePickerPackage(),
+            new RNDeviceInfo(),
             new RNGoogleSigninPackage(),
             new FingerprintAuthPackage(),
                     new FBSDKPackage(mCallbackManager),

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { WhiteBg, WhiteButtonSmall, ButtonSmall } from '../common';
+import { WhiteBg, WhiteButtonSmall, ButtonSmall, ORDER_STATUS_PENDING } from '../common';
 import Dash from 'react-native-dash';
 
 const icCorrect = require('../Image/ic_correct.png');
@@ -18,7 +18,8 @@ const MyOrdersCard = ({
     paymentMethodIcon,
     price,
     onPressCancel,
-    onPressStatus
+    onPressStatus,
+    orderStatus
   }) => (
     <WhiteBg>
 
@@ -54,9 +55,11 @@ const MyOrdersCard = ({
           <View style={{ flex: 3 }}>
             <ButtonSmall label={strings.status} customStyles={{margin: 5, marginLeft: 10, marginBottom: 15}} onPress={onPressStatus}/>
           </View>
-          <View style={{ flex: 3 }}>
-            <WhiteButtonSmall label={strings.cancelOrder} customStyles={{margin: 5, marginLeft: 2, marginBottom: 15}} onPress={onPressCancel}/>
-          </View>
+          {parseInt(orderStatus) === ORDER_STATUS_PENDING &&
+            <View style={{ flex: 3 }}>
+              <WhiteButtonSmall label={strings.cancelOrder} customStyles={{margin: 5, marginLeft: 2, marginBottom: 15}} onPress={onPressCancel}/>
+            </View>
+          }
         </View>
       </View>
       <View style={{ flexDirection: 'column', alignItems: 'center' }}>

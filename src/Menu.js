@@ -15,6 +15,8 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import FlipToggle from 'react-native-flip-toggle-button';
 
+import { CUSTOMER, WASHER } from './common';
+
 const window = Dimensions.get('window');
 const uri = 'https://pickaface.net/gallery/avatar/Opi51c74d0125fd4.png';
 const icEditProfile = require('./Image/ic_edit_profile.png');
@@ -39,6 +41,7 @@ export default class Menu extends React.Component {
     super(props);
 
     this.state = {
+      userData: {},
       userName: null,
       language: false
     };
@@ -47,8 +50,8 @@ export default class Menu extends React.Component {
 
   async componentDidMount(){
       await AsyncStorage.getItem('userData', (err, result) => {
-        this.setState({ userName: `${JSON.parse(result).first_name} ${JSON.parse(result).last_name}` });
-        console.log(this.state.userName);
+        this.setState({ userData: JSON.parse(result), userName: `${JSON.parse(result).first_name} ${JSON.parse(result).last_name}` });
+        //console.log(this.state.userName);
       });
   }
 
@@ -88,77 +91,67 @@ export default class Menu extends React.Component {
               </TouchableOpacity>
             </View>
           </LinearGradient>
-          <View style={{ marginTop: 10, marginBottom: 10 }}>
-            <TouchableOpacity onPress={() => selectedLink('Home')}>
-              <View style={navigationItemContainer}>
-                <View style={menuImageContainer}>
-                  <Image style={imageContainer} source={icHome} />
+          {parseInt(this.state.userData.role_id) === CUSTOMER &&
+            <View style={{ marginTop: 10, marginBottom: 10 }}>
+              <TouchableOpacity onPress={() => selectedLink('Home')}>
+                <View style={navigationItemContainer}>
+                  <View style={menuImageContainer}>
+                    <Image style={imageContainer} source={icHome} />
+                  </View>
+                  <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={textContainer}>{strings.home}</Text>
+                  </View>
                 </View>
-                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                  <Text style={textContainer}>{strings.home}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => selectedLink('MyVehicles')}>
+                <View style={navigationItemContainer}>
+                  <View style={menuImageContainer}>
+                    <Image style={imageContainer} source={icMyVehicles} />
+                  </View>
+                  <View style={{ justifyContent: 'center' }}>
+                    <Text style={textContainer}>{strings.myVehicles}</Text>
+                  </View>
                 </View>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => selectedLink('MyVehicles')}>
-              <View style={navigationItemContainer}>
-                <View style={menuImageContainer}>
-                  <Image style={imageContainer} source={icMyVehicles} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => selectedLink('MyOrders')}>
+                <View style={navigationItemContainer}>
+                  <View style={menuImageContainer}>
+                    <Image style={imageContainer} source={icMyOrders} />
+                  </View>
+                  <View style={{ justifyContent: 'center' }}>
+                    <Text style={textContainer}>{strings.myOrders}</Text>
+                  </View>
                 </View>
-                <View style={{ justifyContent: 'center' }}>
-                  <Text style={textContainer}>{strings.myVehicles}</Text>
+              </TouchableOpacity>
+              {/*
+              <TouchableOpacity onPress={() => selectedLink('WasherCarPlate')}>
+                <View style={navigationItemContainer}>
+                  <View style={menuImageContainer}>
+                    <Image style={imageContainer} source={icPayment} />
+                  </View>
+                  <View style={{ justifyContent: 'center' }}>
+                    <Text style={textContainer}>{strings.jobsCarPlateSmall}</Text>
+                  </View>
                 </View>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => selectedLink('MyOrders')}>
-              <View style={navigationItemContainer}>
-                <View style={menuImageContainer}>
-                  <Image style={imageContainer} source={icMyOrders} />
-                </View>
-                <View style={{ justifyContent: 'center' }}>
-                  <Text style={textContainer}>{strings.myOrders}</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          {/*
-         <TouchableOpacity onPress={() => selectedLink('JobsCards')}>
-            <View style={navigationItemContainer}>
-              <View style={menuImageContainer}>
-                <Image style={imageContainer} source={icPayment} />
-              </View>
-              <View style={{ justifyContent: 'center' }}>
-                <Text style={textContainer}>{strings.jobsSmall}</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
+              </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => selectedLink('WasherCarPlate')}>
-            <View style={navigationItemContainer}>
-              <View style={menuImageContainer}>
-                <Image style={imageContainer} source={icPayment} />
-              </View>
-              <View style={{ justifyContent: 'center' }}>
-                <Text style={textContainer}>{strings.jobsCarPlateSmall}</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => selectedLink('WasherJobsFilter')}>
-            <View style={navigationItemContainer}>
-              <View style={menuImageContainer}>
-                <Image style={imageContainer} source={icPayment} />
-              </View>
-              <View style={{ justifyContent: 'center' }}>
-                <Text style={textContainer}>{strings.jobsFilterSmall}</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-         */}
-          <LinearGradient
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            colors={['#c2d3ec', '#78ccdf']}
-            style={{ padding: 0.5, marginLeft: 60 }}
-          />
+              <TouchableOpacity onPress={() => selectedLink('WasherJobsFilter')}>
+                <View style={navigationItemContainer}>
+                  <View style={menuImageContainer}>
+                    <Image style={imageContainer} source={icPayment} />
+                  </View>
+                  <View style={{ justifyContent: 'center' }}>
+                    <Text style={textContainer}>{strings.jobsFilterSmall}</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+             */}
+              <LinearGradient
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                colors={['#c2d3ec', '#78ccdf']}
+                style={{ padding: 0.5, marginLeft: 60 }}
+              />
             {/*
             <TouchableOpacity onPress={() => onItemSelected('Payment Cards')}>
               <View style={navigationItemContainer}>
@@ -201,7 +194,7 @@ export default class Menu extends React.Component {
                 </View>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => Linking.openURL('https://www.otoserv.ae/faq').catch(()=>alert('Something went wrong'))}>
+            <TouchableOpacity onPress={() => selectedLink('FAQs')}>
               <View style={navigationItemContainer}>
                 <View style={menuImageContainer}>
                   <Image style={imageContainer} source={icFAQs} />
@@ -212,6 +205,31 @@ export default class Menu extends React.Component {
               </View>
             </TouchableOpacity>
           </View>
+        }
+        {parseInt(this.state.userData.role_id) === WASHER &&
+          <View style={{marginTop: 10, marginBottom: 10}}>
+            <TouchableOpacity onPress={() => selectedLink('JobsCards')}>
+                <View style={navigationItemContainer}>
+                  <View style={menuImageContainer}>
+                    <Image style={imageContainer} source={icMyOrders} />
+                  </View>
+                  <View style={{ justifyContent: 'center' }}>
+                    <Text style={textContainer}>{strings.jobsSmall}</Text>
+                  </View>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => selectedLink('Contact')}>
+              <View style={navigationItemContainer}>
+                <View style={menuImageContainer}>
+                  <Image style={imageContainer} source={icContact} />
+                </View>
+                <View style={{ justifyContent: 'center' }}>
+                  <Text style={textContainer}>{strings.contactSmall}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          </View>
+        }
         </ScrollView>
         <LinearGradient
           start={{ x: 0, y: 0 }}

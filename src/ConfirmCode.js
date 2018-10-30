@@ -34,9 +34,9 @@ export default class ConfirmCode extends React.Component {
            Toast.show(''+response.data.message);
          }, 2000);
 
-         if (response.data.status == 1) {
+         if (parseInt(response.data.status == 1)) {
            const { navigate } = this.props.navigation;
-           navigate('Basic');
+           navigate('Home');
          }
        })
        .catch(error => {

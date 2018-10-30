@@ -196,6 +196,7 @@ export default class AddNewVehicles extends React.Component {
                     placeholder={strings.manufacturerYear}
                     onChangeText={year => this.setState({ year })}
                     value={this.state.year}
+                    keyboardType='numeric'
                   />
                 </AlbumDetailSection>
 

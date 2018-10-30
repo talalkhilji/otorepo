@@ -1,67 +1,111 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
-import { CustomStatusBar, WhiteBg, PaymentCard,JobsCard,CarPlate } from '../common';
+import { View, Text, ScrollView, RefreshControl, StyleSheet, TouchableOpacity } from 'react-native';
+import moment from 'moment';
 
+import { CustomStatusBar, WhiteBg, PaymentCard,JobsCard,CarPlate, getWasherOrders, vehicleIcon, ORDER_STATUS_ON_WAY, ORDER_STATUS_IN_PROGRESS } from '../common';
 import GSideMenu from '../GSideMenu';
 
-const icAddNewVehicle = require('../Image/ic_add_new_vehicle.png');
-const icCar = require('../Image/ic_car.png');
-const icCarSuv = require('../Image/suv_2x.png');
-const icCarVan = require('../Image/van_2x.png');
-const icCarTraler = require('../Image/traler_2x.png');
+
+const globleString = require('../language/languageText');
+const strings = globleString.default.strings;
+
 export default class JobsCards extends React.Component {
 constructor(props) {
     super(props);
+
+    this.state = {
+      orders: [],
+      loading: false
+    };
 }
+
+
+componentDidMount(){
+  this.getOrders();
+}
+
+
+async getOrders(){
+  this.setState({loading: true});
+  let orders = await getWasherOrders();
+  //console.log({orders});
+  this.setState({orders, loading: false});
+}
+
 openAddNewCardScreen() {
-    const { navigate } = this.props.navigation;
-    navigate('AddNewCard');
+  const { navigate } = this.props.navigation;
+  navigate('AddNewCard');
 }
+
+openJobDetailScreen(orderId, status){
+
+  const { navigate } = this.props.navigation;
+
+  let screen = 'JobsDetailCards';
+
+  status = parseInt(status);
+
+  if(status === ORDER_STATUS_ON_WAY){
+    screen = 'BeforeWash';
+  }
+  else if(status === ORDER_STATUS_IN_PROGRESS){
+    screen = 'AfterWash';
+  }
+  
+  navigate({id: screen, routeName: screen, params: { id: orderId}});
+}
+
+jobServices(services){
+  //console.log({services});
+  let jobService = [];
+
+  services.map((service) => {
+    jobService.push(service.sub_service_title)
+  });
+
+  return jobService.join(', ');
+}
+
 render() {
   const { mainContainer } = styles;
     return (
       <GSideMenu 
         navigation={this.props.navigation}
-        title='Jobs Cards'
+        title='TODAY JOBS'
       >
       <View style={mainContainer}>
-        {/*<CustomStatusBar
-          title='Jobs CARDS'
-          secondIcon={icAddNewVehicle}
-          onPressSecondIcon={this.openAddNewCardScreen.bind(this)}
-        />*/}
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.loading}
+              onRefresh={this.getOrders.bind(this)}
+            />
+          }
+        >
           <View style={{ padding: 15, paddingTop: 25 }}>
-            <JobsCard
-              cardName='Extensive Deep Wash'
-              cardType='Exterior Steam Wash, Interior Steam Wash, Perfume'
-              carName='SEDAN'
-              icCar={icCar}
-            />
-            <JobsCard
-              cardName='Deep Wash'
-              cardType='Exterior Steam Wash, Interior Steam Wash, Perfume'
-              carName='SUV'
-              icCar={icCarSuv}
-            />
-            <JobsCard
-              cardName='Deep Wash'
-              cardType='Exterior Steam Wash, Interior Steam Wash, Perfume'
-              carName='VAN'
-              icCar={icCarVan}
-            />
-            <JobsCard
-              cardName='Normal Wash'
-              cardType='Exterior Steam Wash, Interior Steam Wash, Perfume'
-              carName='TRAILER'
-              icCar={icCarTraler}
-            />
-            <JobsCard
-              cardName='Deep Wash'
-              cardType='Exterior Steam Wash, Interior Steam Wash, Perfume'
-              carName='SEDAN'
-              icCar={icCar}
-            />
+            {this.state.orders.length > 0 && 
+                <View style={{marginBottom: 5}}><Text style={styles.jobsCountText}>{this.state.orders.length} {strings.jobs}</Text></View>
+            }
+            {this.state.orders.map((order, key) => {
+              return (
+                <TouchableOpacity key={key} onPress={() => this.openJobDetailScreen(order.id, order.current_status)}>
+                  <JobsCard
+                    cardName={order.service_title}
+                    cardType={this.jobServices(order.sub_services)}
+                    carName={order.vehicle_type.toUpperCase()}
+                    icon={vehicleIcon[order.vehicle_type]}
+                    location={order.location_title ? `${order.location_title.substr(0, 15)}...` : 'N/A'}
+                    arrivalTime={moment(`${order.washing_date} ${order.washing_time}`).fromNow()}
+                  />
+                </TouchableOpacity>  
+              )
+            })}
+
+            {(this.state.orders.length === 0 && !this.state.loading) &&
+                <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={styles.text}>No Job Found</Text>
+                </View>
+            }
           </View>
         </ScrollView>
       </View>
@@ -90,6 +134,17 @@ const styles = StyleSheet.create({
     borderTopWidth: 100,
     borderTopColor: 'red',
     borderRadius: 55
+  },
+  jobsCountText:{
+    fontFamily: "Montserrat",
+    fontSize: 12,
+    fontWeight: "bold",
+    fontStyle: "normal",
+    lineHeight: 12,
+    letterSpacing: 0.55,
+    textAlign: "center",
+    color: "#90a8c8",
+    textTransform: 'uppercase'
   }
 
 });

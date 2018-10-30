@@ -1,14 +1,16 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
 const WhiteButtonSmall = ({
     label,
     onPress,
-    customStyles
+    imgSource,
+    customStyles,
+    imageCustomStyles
   }) => (
     <TouchableOpacity onPress={onPress}>
     <View style={[styles.transperantContainer, customStyles]}>
-        <Text style={styles.transperantButtonText} >{label}</Text>
+        { label ? <Text style={styles.transperantButtonText}>{label}</Text> : <Image source={imgSource} style={[styles.imageContainer, imageCustomStyles]} />}
     </View>
     </TouchableOpacity>
   );
@@ -36,6 +38,10 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto-Regular',
     textAlign: 'center',
     color: '#42B6D2',
-  }
+  },
+  imageContainer: {
+    marginLeft: 10,
+    marginRight: 10
+  },
 });
 export { WhiteButtonSmall };

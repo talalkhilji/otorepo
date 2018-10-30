@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage } from 'react-native';
-import { Input, AlbumDetail, AlbumDetailSection, Button, Loader } from './common';
+import { Input, AlbumDetail, AlbumDetailSection, Button, Loader, CUSTOMER, WASHER } from './common';
 import axios from 'axios';
 import Toast from 'react-native-simple-toast';
 import CheckBox from 'react-native-check-box';
@@ -81,7 +81,11 @@ export default class Login extends React.Component {
               console.log(JSON.parse(result).id);
           });
           const { navigate } = this.props.navigation;
-          navigate('Home');
+
+          if(parseInt(response.data.contents[0].role_id) === WASHER)
+            navigate('JobsCards');
+          else
+            navigate('Home');
         }
       })
       .catch(error => {
@@ -115,7 +119,7 @@ export default class Login extends React.Component {
             if (JSON.parse(result)) {
               AsyncStorage.setItem('staySignedIn', JSON.stringify(this.state.staySignedIn));
               const { navigate } = this.props.navigation;
-              navigate('Basic');
+              navigate('Home');
             }else {
                 Toast.show('First time you need to login OR not enable touch id');
             }
@@ -147,6 +151,7 @@ export default class Login extends React.Component {
                     placeholder={strings.email}
                     onChangeText={email => this.setState({ email })}
                     autoCapitalize="none"
+                    keyboardType='email-address'
                   />
                 </AlbumDetailSection>
                 <AlbumDetailSection>

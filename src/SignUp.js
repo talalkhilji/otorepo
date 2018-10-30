@@ -97,6 +97,8 @@ export default class SignUp extends React.Component {
         social_media_account_id: this.state.socialId,
         social_media_type: this.state.socialType
       };
+
+      console.log(JSON.stringify(payload));
       axios({
        method: 'post',
        url: 'signup',
@@ -109,7 +111,7 @@ export default class SignUp extends React.Component {
          Toast.show(response.data.message);
        }, 2000);
 
-       if (response.data.status == 1) {
+       if (parseInt(response.data.status == 1)) {
          AsyncStorage.setItem('userData', JSON.stringify(response.data.contents[0]));
          const { navigate } = this.props.navigation;
          navigate('ConfirmCode');
@@ -162,6 +164,7 @@ render() {
                 placeholder={strings.email}
                 onChangeText={email => this.setState({ email })}
                 value={this.state.email}
+                keyboardType='email-address'
               />
             </AlbumDetailSection>
             <AlbumDetailSection>

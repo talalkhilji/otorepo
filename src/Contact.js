@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { CustomStatusBar, Button } from './common';
 import GSideMenu from './GSideMenu';
 
@@ -15,6 +15,7 @@ openAddNewCardScreen() {
 }
 render() {
   const { mainContainer, textContainer } = styles;
+  const { navigate } = this.props.navigation;
     return (
       <GSideMenu
         title='CONTACT'
@@ -28,14 +29,18 @@ render() {
             <View style={{ flex: 5, justifyContent: 'space-between', padding: 20 }}>
               <Text style={textContainer} >{strings.forAnyInquiryMessage}</Text>
               <View>
-                <Button label='support@oto-carwash.com' />
+                <Button label='support@otoserv.ae' />
                 <Button label='800 OTO' />
               </View>
             </View>
             <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
-              <Text style={textContainer} >{strings.tearmsCondition}</Text>
+              <TouchableOpacity onPress={() => navigate('TermsAndConditions')}>
+                <Text style={textContainer} >{strings.tearmsCondition}</Text>
+              </TouchableOpacity>  
               <Text style={textContainer} >|</Text>
-              <Text style={textContainer} >{strings.privacyPolicy}</Text>
+              <TouchableOpacity onPress={() => navigate('PrivacyPolicy')}>
+                <Text style={textContainer} >{strings.privacyPolicy}</Text>
+              </TouchableOpacity>  
             </View>
 
           </View>

@@ -49,7 +49,10 @@ export default class GSideMenu extends React.Component {
            firstIcon, 
            onPressFirstIcon, 
            secondIcon, 
-           onPressSecondIcon
+           onPressSecondIcon,
+           isCustomerLocation,
+           isBeforeWash,
+           isAfterWash
          } = this.props;
 
     return (
@@ -67,7 +70,11 @@ export default class GSideMenu extends React.Component {
             isLocation={isLocation}
             isService={isService}
             isConfirmation={isConfirmation}
-            isPayment={isPayment} />
+            isPayment={isPayment} 
+            isCustomerLocation={isCustomerLocation}
+            isBeforeWash={isBeforeWash}
+            isAfterWash={isAfterWash}
+        />
         {this.props.children}
       </SideMenu>
     );

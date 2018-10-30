@@ -21,6 +21,8 @@ const Post = async (props) => {
 };
 
 
+// Washer APIs
+
 const getCustomerVehicles = async () => {
   let userData =  await AsyncStorage.getItem('userData');
   let userId = JSON.parse(userData).id;
@@ -155,6 +157,37 @@ const deleteVehicle = async (vehicle_id) => {
   return response;
 }
 
+
+const getFaqs = async () => {
+  let response = await Get({url: `faqs`}); 
+  return sendResponse(response);
+}
+
+// Washer APIs
+const getWasherOrders = async () => {
+  let userData =  await AsyncStorage.getItem('userData');
+  let userId = JSON.parse(userData).id;
+  
+  let response = await Get({url: `washer_orders/${userId}`}); 
+  return sendResponse(response);
+}
+
+
+const getWasherOrderDetail = async (order_id) => {
+  let response = await Get({url: `orders/id/${order_id}`}); 
+  return sendResponse(response);
+}
+
+const getCustomerLocationDetails = async (location_id) => {
+  let response = await Get({url: `locations/${location_id}`});
+  return sendResponse(response);
+}
+
+const updateOrderStatus = async (data) => {
+  let response = await Post({url: `update_order_status`, data:data}); 
+  return response;
+} 
+
 export { Get, 
          Post, 
          getCustomerVehicles, 
@@ -170,5 +203,10 @@ export { Get,
          addLocation,
          cancelOrder,
          getVehicleTypes,
-         deleteVehicle
+         deleteVehicle,
+         getFaqs,
+         getWasherOrders,
+         getWasherOrderDetail,
+         getCustomerLocationDetails,
+         updateOrderStatus
        };

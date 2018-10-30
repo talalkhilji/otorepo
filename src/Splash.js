@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Image, StyleSheet, AsyncStorage } from 'react-native';
-import { WhiteButton } from './common'
+import { WhiteButton, CUSTOMER, WASHER } from './common'
 
 const icLogo = require('./Image/ic_logo.png');
 const strings = require('./language/languageText');
@@ -17,8 +17,9 @@ export default class Splash extends React.Component {
     });
   }
 
-  openLoginScreen(language) {
+  async openLoginScreen(language) {
     const { navigate } = this.props.navigation;
+    let userData = {};
     // navigate('Login');
     // strings.default.strings.setLanguage(language);
     // AsyncStorage.setItem('SelectedLanguage', language,
@@ -26,12 +27,20 @@ export default class Splash extends React.Component {
     //   const { navigate } = this.props.navigation;
     //   navigate('Login');
     // });
+
+    await AsyncStorage.getItem('userData').then((result) => {
+      userData = JSON.parse(result);
+    });
+
     AsyncStorage.getItem('staySignedIn').then((staySignedIn) => {
       console.log(staySignedIn);
       if (staySignedIn === 'false' || staySignedIn === '' || staySignedIn === null) {
           navigate('Login');
       } else {
-          navigate('Home')
+        if(parseInt(userData.role_id) === WASHER)
+          navigate('JobsCards');
+        else
+          navigate('Home');
       }
     });
   }
